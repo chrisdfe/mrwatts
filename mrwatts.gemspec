@@ -1,4 +1,3 @@
-% cat mrwatts.gemspec
 Gem::Specification.new do |s|
   s.name        = 'mrwatts'
   s.version     = '0.0.0'
@@ -8,6 +7,5 @@ Gem::Specification.new do |s|
   s.authors     = ["Christopher Ferris"]
   s.email       = 'christopher.d.ferris@gmail.com'
   s.files       = ["lib/mrwatts.rb"]
-  s.homepage    =
-    'http://rubygems.org/gems/mrwatts'
+  s.homepage    = 'http://rubygems.org/gems/mrwatts'
 end
