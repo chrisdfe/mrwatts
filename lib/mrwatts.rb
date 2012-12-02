@@ -18,9 +18,9 @@ class Mrwatts
 	def build_melody
 		r = Random.new
 		melody = []
-		length = 8
+		length = 16
 		for i in 1 .. length
-			melody << r.rand(length)
+			melody << r.rand(8)
 		end
 		melody
 	end
@@ -67,22 +67,14 @@ class Mrwatts
 		track.events << Tempo.new(Tempo.bpm_to_mpq(@bpm))
 		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
 
-		# Create a track to hold the notes. Add it to the sequence.
-		melody_track = Track.new(seq)
-		seq.tracks << melody_track
-
-		# Give the track a name and an instrument name (optional).
-		melody_track.name = 'Melody Track'
-		melody_track.instrument = GM_PATCH_NAMES[0]
-
+		@velocity = 127
 		# Add a volume controller event (optional).
-		track.events << Controller.new(0, CC_VOLUME, 127)
+		track.events << Controller.new(0, CC_VOLUME, @velocity)
 
 		# Add events to the track: a major scale. Arguments for note on and note off
 		# constructors are channel, note, velocity, and delta_time. Channel numbers
 		# start at zero. We use the new Sequence#note_to_delta method to get the
 		# delta time length of a single quarter note.
-		melody_track.events << ProgramChange.new(0, 1, 0)
 
 		note_lengths = {
 			:whole => seq.note_to_delta('whole'),
@@ -91,12 +83,35 @@ class Mrwatts
 			:eighth => seq.note_to_delta('eighth')
 		}
 
-		@velocity = 127
+		octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
+		
+		#melody
+		# Create a track to hold the notes. Add it to the sequence.
+		melody_track = Track.new(seq)
+		seq.tracks << melody_track
+
+		# Give the track a name and an instrument name (optional).
+		melody_track.name = 'Melody Track'
+		melody_track.instrument = GM_PATCH_NAMES[0]
+
+		melody_track.events << ProgramChange.new(0, 1, 0)
 	 	@melody = build_melody
 
 		@melody.each { | offset |
-		  melody_track.events << NoteOn.new(0, 64 + @scales[scale][offset - 1], @velocity, 0)
-		  melody_track.events << NoteOff.new(0, 64 + @scales[scale][offset - 1], @velocity, note_lengths[:quarter])
+		  melody_track.events << NoteOn.new(0, octaves[4] + @scales[scale][offset - 1], @velocity, 0)
+		  melody_track.events << NoteOff.new(0, octaves[4] + @scales[scale][offset - 1], @velocity, note_lengths[:quarter])
+		}
+
+		#bassline
+		bassline_track = Track.new(seq)
+		seq.tracks << bassline_track
+		bassline_track.events << ProgramChange.new(0, 1, 0)
+
+		@bassline = [1, 5, 3, 4]
+
+		@bassline.each { | offset |
+		  bassline_track.events << NoteOn.new(0, octaves[2] + @scales[scale][offset - 1], @velocity, 0)
+		  bassline_track.events << NoteOff.new(0, octaves[2] + @scales[scale][offset - 1], @velocity, note_lengths[:whole])
 		}
 
 		# Calling recalc_times is not necessary, because that only sets the events'
