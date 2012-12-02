@@ -8,6 +8,9 @@ class Mrwatts
 		@song_name = song_name
 		@scales = get_scales
 		@bpm = 120
+
+		@octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
+
 		puts "Hello, how you be"
 	end
 
@@ -23,6 +26,10 @@ class Mrwatts
 			melody << r.rand(8)
 		end
 		melody
+	end
+
+	def build_bassline
+		[1, 5, 3, 4]
 	end
 
 	def get_scales
@@ -59,6 +66,13 @@ class Mrwatts
 		]
 	end
 
+	def build_track(note_array, track, scale, note_length, pitch)
+		note_array.each { | offset |
+		  track.events << NoteOn.new(0, @octaves[pitch] + @scales[scale][offset - 1], @velocity, 0)
+		  track.events << NoteOff.new(0, @octaves[pitch] + @scales[scale][offset - 1], @velocity, note_length)
+		}
+	end
+
 	def build(scale)
 	 	seq = Sequence.new()
 
@@ -82,8 +96,6 @@ class Mrwatts
 			:quarter => seq.note_to_delta('quarter'),
 			:eighth => seq.note_to_delta('eighth')
 		}
-
-		octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
 		
 		#melody
 		# Create a track to hold the notes. Add it to the sequence.
@@ -97,22 +109,17 @@ class Mrwatts
 		melody_track.events << ProgramChange.new(0, 1, 0)
 	 	@melody = build_melody
 
-		@melody.each { | offset |
-		  melody_track.events << NoteOn.new(0, octaves[4] + @scales[scale][offset - 1], @velocity, 0)
-		  melody_track.events << NoteOff.new(0, octaves[4] + @scales[scale][offset - 1], @velocity, note_lengths[:quarter])
-		}
+	 	#TODO:make this less awful
+		build_track(@melody, melody_track, scale, note_lengths[:quarter], 4)
 
 		#bassline
 		bassline_track = Track.new(seq)
 		seq.tracks << bassline_track
 		bassline_track.events << ProgramChange.new(0, 1, 0)
 
-		@bassline = [1, 5, 3, 4]
+		@bassline = build_bassline
 
-		@bassline.each { | offset |
-		  bassline_track.events << NoteOn.new(0, octaves[2] + @scales[scale][offset - 1], @velocity, 0)
-		  bassline_track.events << NoteOff.new(0, octaves[2] + @scales[scale][offset - 1], @velocity, note_lengths[:whole])
-		}
+		build_track(@bassline, bassline_track, scale, note_lengths[:whole], 2)
 
 		# Calling recalc_times is not necessary, because that only sets the events'
 		# start times, which are not written out to the MIDI file. The delta times are
