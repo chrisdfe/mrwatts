@@ -1,4 +1,5 @@
 require 'midilib'
+require 'reggie_track'
 include MIDI
 
 class Mrwatts
@@ -22,6 +23,8 @@ class Mrwatts
 		r = Random.new
 		melody = []
 		length = 16
+		#TODO: make this based on sequences rather than
+		#single random notes.
 		for i in 1 .. length
 			melody << r.rand(8)
 		end
@@ -64,19 +67,26 @@ class Mrwatts
 			[1, 2, 3],
 			[1, 5, 3]
 		]
+		sequences[r.rand(sequences.length)]
 	end
 
 	def build_track(note_array, track, scale, note_length, pitch)
-		note_array.each { | offset |
-		  track.events << NoteOn.new(0, @octaves[pitch] + @scales[scale][offset - 1], @velocity, 0)
-		  track.events << NoteOff.new(0, @octaves[pitch] + @scales[scale][offset - 1], @velocity, note_length)
-		}
+		note_array.collect! { |n| n + @octaves[pitch] }
+		note_array.each do |offset|
+		  off = (offset - 1) % 8
+		  oct = offset - off
+		  s = @scales[scale]
+		  track.events << NoteOn.new(0, oct + s[off], @velocity, 0)
+		  track.events << NoteOff.new(0, oct + s[off], @velocity, note_length)
+		  
+		  #track.chord([s[], s[o + 2]])
+		end
 	end
 
 	def build(scale)
 	 	seq = Sequence.new()
 
-		track = Track.new(seq)
+		track = ReggieTrack.new(seq, @song)
 		seq.tracks << track
 		track.events << Tempo.new(Tempo.bpm_to_mpq(@bpm))
 		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
@@ -99,7 +109,7 @@ class Mrwatts
 		
 		#melody
 		# Create a track to hold the notes. Add it to the sequence.
-		melody_track = Track.new(seq)
+		melody_track = ReggieTrack.new(seq, @song)
 		seq.tracks << melody_track
 
 		# Give the track a name and an instrument name (optional).
@@ -113,7 +123,7 @@ class Mrwatts
 		build_track(@melody, melody_track, scale, note_lengths[:quarter], 4)
 
 		#bassline
-		bassline_track = Track.new(seq)
+		bassline_track = ReggieTrack.new(seq, @song)
 		seq.tracks << bassline_track
 		bassline_track.events << ProgramChange.new(0, 1, 0)
 
