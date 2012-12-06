@@ -52,16 +52,16 @@ class Mrwatts
 
 	def get_scales
 		{
-			:ionian => [0, 2, 4, 5, 7, 9, 11, 12],
-			:dorian => [0, 2, 3, 5, 7, 9, 10, 12],
-			:phrygian => [0, 1, 3, 5, 7, 8, 10, 12],
-			:lydian => [0, 2, 4, 6, 7, 9, 11, 12],
-			:mixolydian => [0, 2, 4, 5, 7, 9, 10, 12],
-			:aeolian => [0, 2, 3, 5, 7, 8, 10, 12],
-			:locrian => [0, 1, 3, 5, 6, 8, 10, 12],
-			:harmonic_minor => [0, 2, 3, 5, 7, 8, 11, 12],
-			:melodic_minor => [0, 2, 3, 5, 7, 9, 11, 12],
-			:chromatic => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+			:ionian => [0, 2, 4, 5, 7, 9, 11],
+			:dorian => [0, 2, 3, 5, 7, 9, 10],
+			:phrygian => [0, 1, 3, 5, 7, 8, 10],
+			:lydian => [0, 2, 4, 6, 7, 9, 11],
+			:mixolydian => [0, 2, 4, 5, 7, 9, 10],
+			:aeolian => [0, 2, 3, 5, 7, 8, 10],
+			:locrian => [0, 1, 3, 5, 6, 8, 10],
+			:harmonic_minor => [0, 2, 3, 5, 7, 8, 11],
+			:melodic_minor => [0, 2, 3, 5, 7, 9, 11],
+			:chromatic => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 		}
 	end
 
@@ -74,21 +74,31 @@ class Mrwatts
 		# 2 and a half. Support for a single sequence being in a different mode, to do things like
 		# switch to dorian for the IV chord
 		sequences = [
+			# [
+			# 	{:note => 1, :length => @note_lengths[:quarter]},
+			# 	{:note => 2, :length => @note_lengths[:quarter]}, 
+			# 	{:note => 3, :length => @note_lengths[:half]}
+			# ],
+			# [
+			# 	{:note => 1, :length => @note_lengths[:half]},
+			# 	{:note => 2, :length => @note_lengths[:quarter]},
+			# 	{:note => 3, :length => @note_lengths[:quarter]}
+			# ],
+			# [
+			# 	{:note => 1, :length => @note_lengths[:quarter]},
+			# 	{:note => 3, :length => @note_lengths[:quarter]},
+			# 	{:note => 5, :length => @note_lengths[:quarter]},
+			# 	{:note => 3, :length => @note_lengths[:quarter]}				
+			# ]
 			[
-				{:note => 1, :length => @note_lengths[:quarter]},
-				{:note => 2, :length => @note_lengths[:quarter]}, 
-				{:note => 3, :length => @note_lengths[:half]}
-			],
-			[
-				{:note => 1, :length => @note_lengths[:half]},
-				{:note => 2, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:quarter]}
-			],
-			[
-				{:note => 1, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:quarter]},
-				{:note => 5, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:quarter]}				
+				{:note => 1, :length => @note_lengths[:eighth]},
+				{:note => 2, :length => @note_lengths[:eighth]},
+				{:note => 3, :length => @note_lengths[:eighth]},
+				{:note => 4, :length => @note_lengths[:eighth]},
+				{:note => 5, :length => @note_lengths[:eighth]},
+				{:note => 6, :length => @note_lengths[:eighth]},
+				{:note => 7, :length => @note_lengths[:eighth]},
+				{:note => 8, :length => @note_lengths[:eighth]}
 			]
 		]
 		#sequences[r.rand(sequences.length)]
@@ -124,14 +134,10 @@ class Mrwatts
 		note = params[:note]
 		oct = params[:oct]
 
-		puts "before: note = #{note}, oct = #{oct}"
-
-		while note >= 7 do
+		while note > 7 do
 			note -= 7
 			oct += 1
 		end
-
-		puts "after: note = #{note}, oct = #{oct}"
 
 		{:note => note, :oct => oct}
 	end
