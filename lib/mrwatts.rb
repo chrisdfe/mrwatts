@@ -134,7 +134,7 @@ class Mrwatts
 		note = params[:note]
 		oct = params[:oct]
 
-		while note > 7 do
+		while note >= 7 do
 			note -= 7
 			oct += 1
 		end
