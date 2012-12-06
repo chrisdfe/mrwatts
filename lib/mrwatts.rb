@@ -94,7 +94,7 @@ class Mrwatts
 		#sequences[r.rand(sequences.length)]
 	end
 
-	def build_track(note_array, track, scale, pitch, chords = false)
+	def build_track(note_array, track, scale, pitch, chords = false, channel)
 	  	default_scale = @scales[scale]
 		note_array.each do |offset|
 			note = offset[:note]
@@ -108,8 +108,8 @@ class Mrwatts
 			  	chord_notes = [default_scale[fix(off)], default_scale[fix(off + 2)], default_scale[fix(off + 4)]]
 			  	track.chord(chord_notes)
 		  	else
-		  		track.events << NoteOn.new(0, oct + default_scale[off] + mod, @velocity, 0)
-		  		track.events << NoteOff.new(0, oct + default_scale[off] + mod, @velocity, length)
+		  		track.events << NoteOn.new(channel, oct + default_scale[off] + mod, @velocity, 0)
+		  		track.events << NoteOff.new(channel, oct + default_scale[off] + mod, @velocity, length)
 			end
 		end
 	end
@@ -131,37 +131,40 @@ class Mrwatts
 		@velocity = 127
 		# Add a volume controller event (optional).
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
+
+		# Add events to the track: a major scale. Arguments for note on and note off
+		# constructors are channel, note, velocity, and delta_time. Channel numbers
+		# start at zero. We use the new Sequence#note_to_delta method to get the
+		# delta time length of a single quarter note.
 		
 		#melody
 		# Create a track to hold the notes. Add it to the sequence.
 		melody_track = ReggieTrack.new(seq, @song)
-
+		seq.tracks << melody_track
 
 		# Give the track a name and an instrument name (optional).
 		melody_track.name = 'Melody Track'
-		melody_track.instrument = 24
+		melody_track.instrument = GM_PATCH_NAMES[0]
 
-		melody_track.events << ProgramChange.new(0, 1, 0)
+		melody_track.events << ProgramChange.new(0, 10, 0)
 
 		@melody = build_melody
 
 	 	#TODO:make this less awful
-		build_track(@melody, melody_track, scale, 4)
-
-		seq.tracks << melody_track
+		build_track(@melody, melody_track, scale, 4, 0)
 
 		#bassline
 		bassline_track = ReggieTrack.new(seq, @song)
+		seq.tracks << bassline_track
 
 		bassline_track.name = 'Bassline Track'
-		bassline_track.instrument = 10
-		bassline_track.events << ProgramChange.new(0, 1, 0)
+		bassline_track.instrument = GM_PATCH_NAMES[0]
 
-		seq.tracks << bassline_track
+		bassline_track.events << ProgramChange.new(1, 83, 1)
 
 		@bassline = build_bassline
 
-		build_track(@bassline, bassline_track, scale, 2)
+		build_track(@bassline, bassline_track, scale, 2, 1)
 
 		File.open("#{@song_name}.mid", 'wb') { | file | seq.write(file) }
 
