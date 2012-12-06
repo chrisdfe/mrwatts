@@ -18,7 +18,8 @@ class Mrwatts
 			:whole => s.note_to_delta('whole'),
 			:half => s.note_to_delta('half'),
 			:quarter => s.note_to_delta('quarter'),
-			:eighth => s.note_to_delta('eighth')
+			:eighth => s.note_to_delta('eighth'),
+			:sixteenth => s.note_to_delta('sixteenth')
 		}
 
 		puts "Hello, how you be"
@@ -28,12 +29,12 @@ class Mrwatts
 		r = Random.new
 		melody = []
 		#length = 16
-		roots = [1, 8, 3, 7] #the root notes for the phrases
+		roots = [1, 3, 5, 8] #the root notes for the phrases
 		roots.each { |root| 
 			s = random_sequence
 			sequences = s[r.rand(s.length)]
 			sequences.each { |sequence|
-				melody << {:note => sequence[:note] + root - 1, :length => sequence[:length]}
+				melody << {:note => sequence[:note] + root - 1, :velocity => sequence[:velocity], :length => sequence[:length]}
 			}
 		}
 
@@ -43,10 +44,11 @@ class Mrwatts
 	def build_bassline
 		[
 		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 5, :octave => 2, :mod => -1, :length => @note_lengths[:half]},
-		{:note => 5, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 3, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 4, :octave => 2, :length => @note_lengths[:whole]}
+		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
 		]
 	end
 
@@ -68,37 +70,27 @@ class Mrwatts
 	def random_sequence
 		#r = Random.new
 		#Idea: this data could be stored in as json.
-		#TODO: 1. add octave field: by default 0, if it goes over the 'fix'
-		#method will figure out what it should be instead
-		# 2. Link chords, bassline, and sequences together
-		# 2 and a half. Support for a single sequence being in a different mode, to do things like
+		#TODO:
+		# 1. Link chords, bassline, and sequences together
+		# 1 and a half. Support for a single sequence being in a different mode, to do things like
 		# switch to dorian for the IV chord
 		sequences = [
-			# [
-			# 	{:note => 1, :length => @note_lengths[:quarter]},
-			# 	{:note => 2, :length => @note_lengths[:quarter]}, 
-			# 	{:note => 3, :length => @note_lengths[:half]}
-			# ],
-			# [
-			# 	{:note => 1, :length => @note_lengths[:half]},
-			# 	{:note => 2, :length => @note_lengths[:quarter]},
-			# 	{:note => 3, :length => @note_lengths[:quarter]}
-			# ],
-			# [
-			# 	{:note => 1, :length => @note_lengths[:quarter]},
-			# 	{:note => 3, :length => @note_lengths[:quarter]},
-			# 	{:note => 5, :length => @note_lengths[:quarter]},
-			# 	{:note => 3, :length => @note_lengths[:quarter]}				
-			# ]
 			[
-				{:note => 1, :length => @note_lengths[:eighth]},
-				{:note => 2, :length => @note_lengths[:eighth]},
+				{:note => 1, :length => @note_lengths[:quarter]},
+				{:note => 6, :length => @note_lengths[:quarter]}, 
+				{:note => 5, :length => @note_lengths[:half]}
+			],
+			[
+				{:note => 1, :length => @note_lengths[:half]},
+				{:note => 2, :velocity => 0, :length => @note_lengths[:quarter]},
 				{:note => 3, :length => @note_lengths[:eighth]},
-				{:note => 4, :length => @note_lengths[:eighth]},
 				{:note => 5, :length => @note_lengths[:eighth]},
-				{:note => 6, :length => @note_lengths[:eighth]},
-				{:note => 7, :length => @note_lengths[:eighth]},
-				{:note => 8, :length => @note_lengths[:eighth]}
+			],
+			[
+				{:note => 1, :length => @note_lengths[:quarter]},
+				{:note => 3, :length => @note_lengths[:quarter]},
+				{:note => 0, :velocity => 0, :length => @note_lengths[:quarter]},
+				{:note => 3, :length => @note_lengths[:quarter]}				
 			]
 		]
 		#sequences[r.rand(sequences.length)]
@@ -113,6 +105,8 @@ class Mrwatts
 			length = offset[:length]
 			mod = offset[:mod] || 0 #modulation: sharp or flat
 			octave_index = offset[:octave] || 4
+			velocity = offset[:velocity] || @velocity
+			puts velocity
 			
 		  	fixed_note = fix_note({:note => note, :oct => octave_index})
 
@@ -123,8 +117,8 @@ class Mrwatts
 			# track.chord(chord_notes)
 			
 			puts "track: oct = #{oct} note = #{note}, scale note = #{default_scale[note]}, mod = #{mod}"
-	  		track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, @velocity, 0)
-	  		track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, @velocity, length)
+	  		track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
+	  		track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, velocity, length)
 		end
 
 	end
@@ -134,7 +128,7 @@ class Mrwatts
 		note = params[:note]
 		oct = params[:oct]
 
-		while note >= 7 do
+		while note > 7 do
 			note -= 7
 			oct += 1
 		end
