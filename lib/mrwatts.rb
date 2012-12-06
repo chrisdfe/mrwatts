@@ -28,12 +28,12 @@ class Mrwatts
 		r = Random.new
 		melody = []
 		#length = 16
-		offsets = [1, 2, 3, 4]
-		offsets.each { |offset| 
+		roots = [1, 8, 3, 7] #the root notes for the phrases
+		roots.each { |root| 
 			s = random_sequence
 			sequences = s[r.rand(s.length)]
-			sequences.each { |chunk|
-				melody << {:note => chunk[:note] + offset - 1, :length => chunk[:length]}
+			sequences.each { |sequence|
+				melody << {:note => sequence[:note] + root - 1, :length => sequence[:length]}
 			}
 		}
 
@@ -42,11 +42,11 @@ class Mrwatts
 
 	def build_bassline
 		[
-		{:note => 1, :length => @note_lengths[:whole]},
-		{:note => 5, :mod => -1, :length => @note_lengths[:half]},
-		{:note => 5, :length => @note_lengths[:half]},
-		{:note => 3, :length => @note_lengths[:whole]},
-		{:note => 4, :length => @note_lengths[:whole]}
+		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		{:note => 5, :octave => 2, :mod => -1, :length => @note_lengths[:half]},
+		{:note => 5, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 3, :octave => 2, :length => @note_lengths[:whole]},
+		{:note => 4, :octave => 2, :length => @note_lengths[:whole]}
 		]
 	end
 
@@ -94,33 +94,50 @@ class Mrwatts
 		#sequences[r.rand(sequences.length)]
 	end
 
-	def build_track(note_array, track, scale, pitch, chords = false, channel)
+	def build_track(note_array, track, scale, channel)
+
 	  	default_scale = @scales[scale]
+
 		note_array.each do |offset|
 			note = offset[:note]
 			length = offset[:length]
-			mod = offset[:mod] || 0
+			mod = offset[:mod] || 0 #modulation: sharp or flat
+			octave_index = offset[:octave] || 4
+			
+		  	fixed_note = fix_note({:note => note, :oct => octave_index})
 
-		  	off = (note - 1) % 8
-		  	oct = @octaves[pitch]
+		  	note = fixed_note[:note]
+		  	oct = @octaves[fixed_note[:oct]]
 
-			if chords then
-			  	chord_notes = [default_scale[fix(off)], default_scale[fix(off + 2)], default_scale[fix(off + 4)]]
-			  	track.chord(chord_notes)
-		  	else
-		  		track.events << NoteOn.new(channel, oct + default_scale[off] + mod, @velocity, 0)
-		  		track.events << NoteOff.new(channel, oct + default_scale[off] + mod, @velocity, length)
-			end
+			# chord_notes = [default_scale[fix_note(off)], default_scale[fix_note(off + 2)], default_scale[fix(off + 4)]]
+			# track.chord(chord_notes)
+			
+			puts "track: oct = #{oct} note = #{note}, scale note = #{default_scale[note]}, mod = #{mod}"
+	  		track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, @velocity, 0)
+	  		track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, @velocity, length)
 		end
+
 	end
 
 
-	def fix(num)
-		if num > 8 then num -= 8 end
-		num
+	def fix_note(params)
+		note = params[:note]
+		oct = params[:oct]
+
+		puts "before: note = #{note}, oct = #{oct}"
+
+		while note >= 7 do
+			note -= 7
+			oct += 1
+		end
+
+		puts "after: note = #{note}, oct = #{oct}"
+
+		{:note => note, :oct => oct}
 	end
 
-	def build(scale)
+	def build(scale = :harmonic_minor)
+		@scale = @scales[scale]
 
 		seq = Sequence.new()
 		track = ReggieTrack.new(seq, @song)
@@ -151,7 +168,7 @@ class Mrwatts
 		@melody = build_melody
 
 	 	#TODO:make this less awful
-		build_track(@melody, melody_track, scale, 4, 0)
+		build_track(@melody, melody_track, scale, 0)
 
 		#bassline
 		bassline_track = ReggieTrack.new(seq, @song)
@@ -164,7 +181,7 @@ class Mrwatts
 
 		@bassline = build_bassline
 
-		build_track(@bassline, bassline_track, scale, 2, 1)
+		build_track(@bassline, bassline_track, scale, 1)
 
 		File.open("#{@song_name}.mid", 'wb') { | file | seq.write(file) }
 
