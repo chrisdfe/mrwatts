@@ -13,6 +13,7 @@ class Mrwatts
 		@octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
 
 	 	s = Sequence.new()
+
 		@note_lengths = {
 			:whole => s.note_to_delta('whole'),
 			:half => s.note_to_delta('half'),
@@ -28,9 +29,10 @@ class Mrwatts
 		melody = []
 		#length = 16
 		offsets = [1, 2, 3, 4]
-		seq = random_sequence[0]
 		offsets.each { |offset| 
-			seq.each { |chunk|
+			s = random_sequence
+			sequences = s[r.rand(s.length)]
+			sequences.each { |chunk|
 				melody << {:note => chunk[:note] + offset - 1, :length => chunk[:length]}
 			}
 		}
@@ -66,16 +68,34 @@ class Mrwatts
 	def random_sequence
 		#r = Random.new
 		#Idea: this data could be stored in as json.
+		#TODO: 1. add octave field: by default 0, if it goes over the 'fix'
+		#method will figure out what it should be instead
+		# 2. Link chords, bassline, and sequences together
+		# 2 and a half. Support for a single sequence being in a different mode, to do things like
+		# switch to dorian for the IV chord
 		sequences = [
-			[{:note => 1, :length => @note_lengths[:quarter]},
-			{:note => 2, :length => @note_lengths[:quarter]}, 
-			{:note => 3, :length => @note_lengths[:half]}],
+			[
+				{:note => 1, :length => @note_lengths[:quarter]},
+				{:note => 2, :length => @note_lengths[:quarter]}, 
+				{:note => 3, :length => @note_lengths[:half]}
+			],
+			[
+				{:note => 1, :length => @note_lengths[:half]},
+				{:note => 2, :length => @note_lengths[:quarter]},
+				{:note => 3, :length => @note_lengths[:quarter]}
+			],
+			[
+				{:note => 1, :length => @note_lengths[:quarter]},
+				{:note => 3, :length => @note_lengths[:quarter]},
+				{:note => 5, :length => @note_lengths[:quarter]},
+				{:note => 3, :length => @note_lengths[:quarter]}				
+			]
 		]
 		#sequences[r.rand(sequences.length)]
 	end
 
 	def build_track(note_array, track, scale, pitch, chords = false)
-	  	s = @scales[scale]
+	  	default_scale = @scales[scale]
 		note_array.each do |offset|
 			note = offset[:note]
 			length = offset[:length]
@@ -85,11 +105,11 @@ class Mrwatts
 		  	oct = @octaves[pitch]
 
 			if chords then
-			  	chord_notes = [s[fix(off)], s[fix(off + 2)], s[fix(off + 4)]]
+			  	chord_notes = [default_scale[fix(off)], default_scale[fix(off + 2)], default_scale[fix(off + 4)]]
 			  	track.chord(chord_notes)
 		  	else
-		  		track.events << NoteOn.new(0, oct + s[off] + mod, @velocity, 0)
-		  		track.events << NoteOff.new(0, oct + s[off] + mod, @velocity, length)
+		  		track.events << NoteOn.new(0, oct + default_scale[off] + mod, @velocity, 0)
+		  		track.events << NoteOff.new(0, oct + default_scale[off] + mod, @velocity, length)
 			end
 		end
 	end
@@ -111,16 +131,11 @@ class Mrwatts
 		@velocity = 127
 		# Add a volume controller event (optional).
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
-
-		# Add events to the track: a major scale. Arguments for note on and note off
-		# constructors are channel, note, velocity, and delta_time. Channel numbers
-		# start at zero. We use the new Sequence#note_to_delta method to get the
-		# delta time length of a single quarter note.
 		
 		#melody
 		# Create a track to hold the notes. Add it to the sequence.
 		melody_track = ReggieTrack.new(seq, @song)
-		seq.tracks << melody_track
+
 
 		# Give the track a name and an instrument name (optional).
 		melody_track.name = 'Melody Track'
@@ -133,14 +148,16 @@ class Mrwatts
 	 	#TODO:make this less awful
 		build_track(@melody, melody_track, scale, 4)
 
+		seq.tracks << melody_track
+
 		#bassline
 		bassline_track = ReggieTrack.new(seq, @song)
-		seq.tracks << bassline_track
 
 		bassline_track.name = 'Bassline Track'
-		bassline_track.instrument = 2
+		bassline_track.instrument = 10
 		bassline_track.events << ProgramChange.new(0, 1, 0)
 
+		seq.tracks << bassline_track
 
 		@bassline = build_bassline
 
