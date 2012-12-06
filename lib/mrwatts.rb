@@ -71,9 +71,12 @@ class Mrwatts
 		#r = Random.new
 		#Idea: this data could be stored in as json.
 		#TODO:
-		# 1. Link chords, bassline, and sequences together
+		# 1. Have chords, bassline and melody be based on a common progression
 		# 1 and a half. Support for a single sequence being in a different mode, to do things like
 		# switch to dorian for the IV chord
+		# 2. Percussion
+		# 3. Chords
+		# 4. 
 		sequences = [
 			[
 				{:note => 1, :length => @note_lengths[:quarter]},
@@ -149,11 +152,6 @@ class Mrwatts
 		# Add a volume controller event (optional).
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
 
-		# Add events to the track: a major scale. Arguments for note on and note off
-		# constructors are channel, note, velocity, and delta_time. Channel numbers
-		# start at zero. We use the new Sequence#note_to_delta method to get the
-		# delta time length of a single quarter note.
-		
 		#melody
 		# Create a track to hold the notes. Add it to the sequence.
 		melody_track = ReggieTrack.new(seq, @song)
