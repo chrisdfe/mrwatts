@@ -76,7 +76,7 @@ class Mrwatts
 		# switch to dorian for the IV chord
 		# 2. Percussion
 		# 3. Chords
-		# 4. 
+		# 4. Motifs/themes -- snippets that are reused to make a coherent melody
 		sequences = [
 			[
 				{:note => 1, :length => @note_lengths[:quarter]},
@@ -134,6 +134,10 @@ class Mrwatts
 		while note > 7 do
 			note -= 7
 			oct += 1
+		end
+
+		while note < 0 do
+			#add to note, subtract from oct
 		end
 
 		{:note => note, :oct => oct}
