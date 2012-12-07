@@ -1,5 +1,7 @@
 require 'midilib'
+require 'json'
 require 'reggie_track'
+
 include MIDI
 
 class Mrwatts
@@ -25,6 +27,10 @@ class Mrwatts
 		puts "Hello, how you be"
 	end
 
+	def set_scale(scale)
+		@scale = @scales[scale]
+	end
+
 	def build_melody
 		r = Random.new
 		melody = []
@@ -43,14 +49,29 @@ class Mrwatts
 	end
 
 	def build_bassline
-		[
-		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		]
+		file = open("../lib/sequences/basslines.json")
+		json = file.read
+		sequences = JSON.parse(json)
+
+		sequences.each do |sequence|
+			counter = 0
+			sequence.each do |note|
+				note["note"] = note["note"].to_i
+				note["octave"] = note["octave"].to_i
+				length = "#{note['length']}".to_sym
+				note["length"] = @note_lengths[length]
+			end
+		end
+
+		sequences[0]
+		# [
+		# {:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		# {:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		# {:note => 4, :octave => 2, :length => @note_lengths[:half]},
+		# {:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		# {:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		# {:note => 4, :octave => 2, :length => @note_lengths[:half]},
+		# ]
 	end
 
 	def get_scales
@@ -69,16 +90,6 @@ class Mrwatts
 	end
 
 	def random_sequence
-		#r = Random.new
-		#Idea: this data could be stored in as json.
-		#TODO:
-		# 1. Have chords, bassline and melody be based on a common progression
-		# 1 and a half. Support for a single sequence being in a different mode, to do things like
-		# switch to dorian for the IV chord
-		# 2. Percussion
-		# 3. Chords
-		# 4. Motifs/themes -- snippets that are reused to make a coherent melody
-		# 5. REFACTOR/CLEAN UP
 		sequences = [
 			[
 				{:note => 1, :length => @note_lengths[:quarter]},
@@ -112,6 +123,7 @@ class Mrwatts
 			octave_index = offset[:octave] || 4
 			velocity = offset[:velocity] || @velocity
 
+			puts "note: #{note}, octave: #{octave_index}"
 		  	fixed_note = fix_note({:note => note, :oct => octave_index})
 
 		  	note = fixed_note[:note]
@@ -126,7 +138,6 @@ class Mrwatts
 					@octaves[three[:oct]] + default_scale[three[:note] - 1],
 					@octaves[five[:oct]] + default_scale[five[:note] - 1]
 				]
-				puts "length: #{length}"
 				track.chord(chord_notes, length)
 			else
 	  			track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
