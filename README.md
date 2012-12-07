@@ -1,6 +1,8 @@
+#Mr Watts
+
 This gem is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves.
 
-TODO:
+### TODO:
 <ol>
 	<li>Have chords, bassline and melody be based on a common progression</li>
 	<li>Support for a single sequence being in a different mode, to do things like switch to dorian for the IV chord</li>
