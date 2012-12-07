@@ -6,6 +6,6 @@ Gem::Specification.new do |s|
   s.description = "Named after the inspiring Reggie Watts"
   s.authors     = ["Christopher Ferris"]
   s.email       = 'christopher.d.ferris@gmail.com'
-  s.files       = ["lib/mrwatts.rb", "lib/reggie_track.rb", "lib/sequences/bassline.json"]
+  s.files       = ["lib/mrwatts.rb", "lib/reggie_track.rb", "lib/sequences/basslines.json"]
   s.homepage    = 'http://rubygems.org/gems/mrwatts'
 end

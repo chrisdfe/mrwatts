@@ -17,11 +17,11 @@ class Mrwatts
 	 	s = Sequence.new()
 
 		@note_lengths = {
-			:whole => s.note_to_delta('whole'),
-			:half => s.note_to_delta('half'),
-			:quarter => s.note_to_delta('quarter'),
-			:eighth => s.note_to_delta('eighth'),
-			:sixteenth => s.note_to_delta('sixteenth')
+			"whole" => s.note_to_delta('whole'),
+			"half" => s.note_to_delta('half'),
+			"quarter" => s.note_to_delta('quarter'),
+			"eighth" => s.note_to_delta('eighth'),
+			"sixteenth" => s.note_to_delta('sixteenth')
 		}
 
 		puts "Hello, how you be"
@@ -41,7 +41,7 @@ class Mrwatts
 			s = random_sequence
 			sequences = s[r.rand(s.length)]
 			sequences.each { |sequence|
-				melody << {:note => sequence[:note] + root - 1, :velocity => sequence[:velocity], :length => sequence[:length]}
+				melody << {"note" => sequence["note"] + root - 1, "velocity" => sequence["velocity"], "length" => sequence["length"]}
 			}
 		}
 
@@ -49,7 +49,7 @@ class Mrwatts
 	end
 
 	def build_bassline
-		file = open("../lib/sequences/basslines.json")
+		file = open("lib/sequences/basslines.json")
 		json = file.read
 		sequences = JSON.parse(json)
 
@@ -58,55 +58,38 @@ class Mrwatts
 			sequence.each do |note|
 				note["note"] = note["note"].to_i
 				note["octave"] = note["octave"].to_i
-				length = "#{note['length']}".to_sym
+				length = "#{note['length']}".to_s
 				note["length"] = @note_lengths[length]
 			end
 		end
 
-		puts sequences[0]
-		[
-		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		]
+		sequences[0]
 	end
 
 	def get_scales
-		{
-			:ionian => [0, 2, 4, 5, 7, 9, 11],
-			:dorian => [0, 2, 3, 5, 7, 9, 10],
-			:phrygian => [0, 1, 3, 5, 7, 8, 10],
-			:lydian => [0, 2, 4, 6, 7, 9, 11],
-			:mixolydian => [0, 2, 4, 5, 7, 9, 10],
-			:aeolian => [0, 2, 3, 5, 7, 8, 10],
-			:locrian => [0, 1, 3, 5, 6, 8, 10],
-			:harmonic_minor => [0, 2, 3, 5, 7, 8, 11],
-			:melodic_minor => [0, 2, 3, 5, 7, 9, 11],
-			:chromatic => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-		}
+		file = open("lib/sequences/scales.json")
+		json = file.read
+		scales = JSON.parse(json)
 	end
 
 	def random_sequence
 		sequences = [
 			[
-				{:note => 1, :length => @note_lengths[:quarter]},
-				{:note => 6, :length => @note_lengths[:quarter]}, 
-				{:note => 5, :length => @note_lengths[:half]}
+				{"note" => 1, "length" => @note_lengths["quarter"]},
+				{"note" => 6, "length" => @note_lengths["quarter"]}, 
+				{"note" => 5, "length" => @note_lengths["half"]}
 			],
 			[
-				{:note => 1, :length => @note_lengths[:half]},
-				{:note => 2, :velocity => 0, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:eighth]},
-				{:note => 5, :length => @note_lengths[:eighth]},
+				{"note" => 1, "length" => @note_lengths["half"]},
+				{"note" => 2, "velocity" => 0, "length" => @note_lengths["quarter"]},
+				{"note" => 3, "length" => @note_lengths["eighth"]},
+				{"note" => 5, "length" => @note_lengths["eighth"]},
 			],
 			[
-				{:note => 1, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:quarter]},
-				{:note => 0, :velocity => 0, :length => @note_lengths[:quarter]},
-				{:note => 3, :length => @note_lengths[:quarter]}				
+				{"note" => 1, "length" => @note_lengths["quarter"]},
+				{"note" => 3, "length" => @note_lengths["quarter"]},
+				{"note" => 0, "velocity" => 0, "length" => @note_lengths["quarter"]},
+				{"note" => 3, "length" => @note_lengths["quarter"]}				
 			]
 		]
 
@@ -117,17 +100,17 @@ class Mrwatts
 	  	default_scale = @scales[scale]
 
 		note_array.each do |offset|
-			note = offset[:note]
-			length = offset[:length]
-			mod = offset[:mod] || 0 #modulation: sharp or flat
-			octave_index = offset[:octave] || 4
-			velocity = offset[:velocity] || @velocity
+			note = offset["note"]
+			length = offset["length"]
+			mod = offset["mod"] || 0 #modulation: sharp or flat
+			octave_index = offset["octave"] || 4
+			velocity = offset["velocity"] || @velocity
 
-			puts "note: #{note}, octave: #{octave_index}"
-		  	fixed_note = fix_note({:note => note, :oct => octave_index})
-
-		  	note = fixed_note[:note]
-		  	oct = @octaves[fixed_note[:oct]]
+			puts "note: #{note}, octave: #{octave_index}, length: #{length}"
+		  	fixed_note = fix_note({"note" => note, "oct" => octave_index})
+		  	puts "oct: #{@octaves[fixed_note["oct"]]}"
+		  	note = fixed_note["note"]
+		  	oct = @octaves[fixed_note["oct"]]
 
 		  	if chords then
 				chord_notes = build_chord(note, octave_index, default_scale)
@@ -141,29 +124,29 @@ class Mrwatts
 	end
 
 	def build_chord(note, octave_index, default_scale)
-  		one = fix_note({:note => note, :oct => octave_index})
-  		three = fix_note({:note => note + 2, :oct => octave_index})
-  		five = fix_note({:note => note + 4, :oct => octave_index})
+  		one = fix_note({"note" => note, "oct" => octave_index})
+  		three = fix_note({"note" => note + 2, "oct" => octave_index})
+  		five = fix_note({"note" => note + 4, "oct" => octave_index})
 		[
-			@octaves[one[:oct]] + default_scale[one[:note] - 1],
-			@octaves[three[:oct]] + default_scale[three[:note] - 1],
-			@octaves[five[:oct]] + default_scale[five[:note] - 1]
+			@octaves[one["oct"]] + default_scale[one["note"] - 1],
+			@octaves[three["oct"]] + default_scale[three["note"] - 1],
+			@octaves[five["oct"]] + default_scale[five["note"] - 1]
 		]
 	end
 
 	def fix_note(params)
-		note = params[:note]
-		oct = params[:oct]
+		note = params["note"]
+		oct = params["oct"]
 
 		while note > 7 do
 			note -= 7
 			oct += 1
 		end
 
-		{:note => note, :oct => oct}
+		{"note" => note, "oct" => oct}
 	end
 
-	def build(scale = :harmonic_minor)
+	def build(scale = "harmonic_minor")
 		@scale = @scales[scale]
 
 		seq = Sequence.new()
@@ -185,6 +168,7 @@ class Mrwatts
 
 		melody_track.events << ProgramChange.new(0, 10, 0)
 
+		puts "building melody"
 		@melody = build_melody
 
 	 	#TODO:make this less awful
@@ -200,10 +184,11 @@ class Mrwatts
 		bassline_track.events << ProgramChange.new(1, 83, 1)
 
 		@bassline = build_bassline
-
+		puts "building bassline"
 		build_track(@bassline, bassline_track, scale, 1)
 
 		#chords
+		puts "building chord track"
 		chord_track = ReggieTrack.new(seq, @song)
 		seq.tracks << chord_track
 

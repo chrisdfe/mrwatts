@@ -11,7 +11,7 @@ describe Mrwatts do
 	end
 
 	it "should be able to build a song using a specified scale" do
-		@rw.build(:lydian)
+		@rw.build("lydian")
 	end
 
 	it "should be able to build a song with a slow, medium, or fast tempo" do
