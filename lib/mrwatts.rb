@@ -49,16 +49,15 @@ class Mrwatts
 	end
 
 	def build_bassline
-		file = open("lib/sequences/basslines.json")
+		file = open("lib/data/basslines.json")
 		json = file.read
 		sequences = JSON.parse(json)
 
 		sequences.each do |sequence|
-			counter = 0
 			sequence.each do |note|
 				note["note"] = note["note"].to_i
 				note["octave"] = note["octave"].to_i
-				length = "#{note['length']}".to_s
+				length = "#{note['length']}"
 				note["length"] = @note_lengths[length]
 			end
 		end
@@ -67,32 +66,21 @@ class Mrwatts
 	end
 
 	def get_scales
-		file = open("lib/sequences/scales.json")
+		file = open("lib/data/scales.json")
 		json = file.read
 		scales = JSON.parse(json)
 	end
 
 	def random_sequence
-		sequences = [
-			[
-				{"note" => 1, "length" => @note_lengths["quarter"]},
-				{"note" => 6, "length" => @note_lengths["quarter"]}, 
-				{"note" => 5, "length" => @note_lengths["half"]}
-			],
-			[
-				{"note" => 1, "length" => @note_lengths["half"]},
-				{"note" => 2, "velocity" => 0, "length" => @note_lengths["quarter"]},
-				{"note" => 3, "length" => @note_lengths["eighth"]},
-				{"note" => 5, "length" => @note_lengths["eighth"]},
-			],
-			[
-				{"note" => 1, "length" => @note_lengths["quarter"]},
-				{"note" => 3, "length" => @note_lengths["quarter"]},
-				{"note" => 0, "velocity" => 0, "length" => @note_lengths["quarter"]},
-				{"note" => 3, "length" => @note_lengths["quarter"]}				
-			]
-		]
-
+		file = open("lib/data/sequences.json")
+		json = file.read
+		sequences = JSON.parse(json)
+		sequences.each do |sequence|
+			sequence.each do |note|
+				length = "#{note['length']}"
+				note["length"] = @note_lengths[length]
+			end
+		end
 	end
 
 	def build_track(note_array, track, scale, chords = false, channel)
@@ -176,7 +164,7 @@ class Mrwatts
 
 		#bassline
 		bassline_track = ReggieTrack.new(seq, @song)
-		#seq.tracks << bassline_track
+		seq.tracks << bassline_track
 
 		bassline_track.name = 'Bassline Track'
 		bassline_track.instrument = GM_PATCH_NAMES[0]

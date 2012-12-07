@@ -1,0 +1,10 @@
+[
+	[
+		{"note": 1, "octave": 2, "length": "whole"},
+		{"note": 3, "octave": 2, "length": "half"},
+		{"note": 4, "octave": 2, "length": "half"},
+		{"note": 1, "octave": 2, "length": "whole"},
+		{"note": 3, "octave": 2, "length": "half"},
+		{"note": 4, "octave": 2, "length": "half"}
+	]
+]

@@ -1,0 +1,19 @@
+[
+	[
+		{"note": 1, "length": "quarter"},
+		{"note": 6, "length": "quarter"}, 
+		{"note": 5, "length": "half"}
+	],
+	[
+		{"note": 1, "length": "half"},
+		{"note": 2, "velocity" : "0", "length": "quarter"},
+		{"note": 3, "length": "eighth"},
+		{"note": 5, "length": "eighth"}
+	],
+	[
+		{"note": 1, "length": "quarter"},
+		{"note": 3, "length": "quarter"},
+		{"note": 0, "velocity": "0", "length": "quarter"},
+		{"note": 3, "length": "quarter"}				
+	]
+]
