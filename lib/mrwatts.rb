@@ -104,8 +104,8 @@ class Mrwatts
 				chord_notes = build_chord(note, octave_index, default_scale)
 				track.chord(chord_notes, length)
 			else
-	  			track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
-	  			track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, velocity, length)
+	  			#this seems like too many parameters
+	  			track.add_note(channel, oct, default_scale, note, mod, velocity, length)
 	  		end
 		end
 
@@ -134,22 +134,10 @@ class Mrwatts
 		{"note" => note, "oct" => oct}
 	end
 
-	def build(scale = "harmonic_minor")
-		@scale = @scales[scale]
-
-		seq = Sequence.new()
-		track = ReggieTrack.new(seq, @song)
-		seq.tracks << track
-		track.events << Tempo.new(Tempo.bpm_to_mpq(@bpm))
-		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
-
-		@velocity = 127
-		# Add a volume controller event (optional).
-		track.events << Controller.new(0, CC_VOLUME, @velocity)
-
+	def write_melody
 		#melody
-		melody_track = ReggieTrack.new(seq, @song)
-		seq.tracks << melody_track
+		melody_track = ReggieTrack.new(@seq, @song)
+		@seq.tracks << melody_track
 
 		melody_track.name = 'Melody Track'
 		melody_track.instrument = GM_PATCH_NAMES[0]
@@ -160,11 +148,13 @@ class Mrwatts
 		@melody = build_melody
 
 	 	#TODO:make this less awful
-		build_track(@melody, melody_track, scale, 0)
+		build_track(@melody, melody_track, @scale, 0)
+	end
 
+	def write_bassline
 		#bassline
-		bassline_track = ReggieTrack.new(seq, @song)
-		seq.tracks << bassline_track
+		bassline_track = ReggieTrack.new(@seq, @song)
+		@seq.tracks << bassline_track
 
 		bassline_track.name = 'Bassline Track'
 		bassline_track.instrument = GM_PATCH_NAMES[0]
@@ -173,20 +163,41 @@ class Mrwatts
 
 		@bassline = build_bassline
 		puts "building bassline"
-		build_track(@bassline, bassline_track, scale, 1)
+		build_track(@bassline, bassline_track, @scale, 1)
+	end
 
+	def write_chords
 		#chords
 		puts "building chord track"
-		chord_track = ReggieTrack.new(seq, @song)
-		seq.tracks << chord_track
+		chord_track = ReggieTrack.new(@seq, @song)
+		@seq.tracks << chord_track
 
 		chord_track.name = 'Chord Track'
 		chord_track.instrument = GM_PATCH_NAMES[0]
 
 		chord_track.events << ProgramChange.new(1, 83, 1)
-		build_track(@bassline, chord_track, scale, true, 2)
+		build_track(@bassline, chord_track, @scale, true, 2)
+	end
 
-		File.open("#{@song_name}.mid", 'wb') { | file | seq.write(file) }
+	def build(scale = "harmonic_minor")
+		@scale = @scales[scale]
+		@velocity = 127
+		@scale=(scale)
+
+		@seq = Sequence.new()
+		track = ReggieTrack.new(@seq, @song)
+		@seq.tracks << track
+		track.events << Tempo.new(Tempo.bpm_to_mpq(@bpm))
+		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
+
+		# Add a volume controller event (optional).
+		track.events << Controller.new(0, CC_VOLUME, @velocity)
+
+		write_melody
+		write_bassline
+		write_chords
+
+		File.open("#{@song_name}.mid", 'wb') { | file | @seq.write(file) }
 
 		puts "Built."
 	end
