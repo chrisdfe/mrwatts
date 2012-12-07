@@ -6,5 +6,5 @@ TODO:
 switch to dorian for the IV chord
 2. Percussion
 3. Motifs/themes -- snippets that are reused to make a coherent melody
-4. JSON
-5. Refactoring/Cleanup
+4. Refactoring/Cleanup
+5. Add support progressions intended only for major keys, or minor keys, as well as ones that work for both.

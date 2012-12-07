@@ -27,7 +27,7 @@ class Mrwatts
 		puts "Hello, how you be"
 	end
 
-	def set_scale(scale)
+	def scale=(scale)
 		@scale = @scales[scale]
 	end
 
@@ -38,31 +38,27 @@ class Mrwatts
 		roots = [1, 3, 5, 8] #the root notes for the phrases	
 
 		roots.each { |root| 
-			s = random_sequence
+			s = get_sequences
 			sequences = s[r.rand(s.length)]
 			sequences.each { |sequence|
-				melody << {"note" => sequence["note"] + root - 1, "velocity" => sequence["velocity"], "length" => sequence["length"]}
+				melody << {
+					"note" => sequence["note"] + root - 1,
+					"velocity" => sequence["velocity"],
+					"length" => sequence["length"]
+				}
 			}
 		}
 
 		melody
 	end
 
-	def build_bassline
-		file = open("lib/data/basslines.json")
-		json = file.read
-		sequences = JSON.parse(json)
-
+	def format_json(sequences)
 		sequences.each do |sequence|
 			sequence.each do |note|
-				note["note"] = note["note"].to_i
-				note["octave"] = note["octave"].to_i
 				length = "#{note['length']}"
 				note["length"] = @note_lengths[length]
 			end
 		end
-
-		sequences[0]
 	end
 
 	def get_scales
@@ -71,16 +67,20 @@ class Mrwatts
 		scales = JSON.parse(json)
 	end
 
-	def random_sequence
+	def get_sequences
 		file = open("lib/data/sequences.json")
 		json = file.read
 		sequences = JSON.parse(json)
-		sequences.each do |sequence|
-			sequence.each do |note|
-				length = "#{note['length']}"
-				note["length"] = @note_lengths[length]
-			end
-		end
+		sequences = format_json(sequences)
+	end
+
+	def build_bassline
+		file = open("lib/data/basslines.json")
+		json = file.read
+		sequences = JSON.parse(json)
+		sequences = format_json(sequences)
+
+		sequences[Random.rand(sequences.length)]
 	end
 
 	def build_track(note_array, track, scale, chords = false, channel)
