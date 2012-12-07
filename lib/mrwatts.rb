@@ -63,15 +63,15 @@ class Mrwatts
 			end
 		end
 
-		sequences[0]
-		# [
-		# {:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		# {:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		# {:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		# {:note => 1, :octave => 2, :length => @note_lengths[:whole]},
-		# {:note => 3, :octave => 2, :length => @note_lengths[:half]},
-		# {:note => 4, :octave => 2, :length => @note_lengths[:half]},
-		# ]
+		puts sequences[0]
+		[
+		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 1, :octave => 2, :length => @note_lengths[:whole]},
+		{:note => 3, :octave => 2, :length => @note_lengths[:half]},
+		{:note => 4, :octave => 2, :length => @note_lengths[:half]},
+		]
 	end
 
 	def get_scales
@@ -109,7 +109,7 @@ class Mrwatts
 				{:note => 3, :length => @note_lengths[:quarter]}				
 			]
 		]
-		#sequences[r.rand(sequences.length)]
+
 	end
 
 	def build_track(note_array, track, scale, chords = false, channel)
@@ -130,14 +130,7 @@ class Mrwatts
 		  	oct = @octaves[fixed_note[:oct]]
 
 		  	if chords then
-		  		one = fix_note({:note => note, :oct => octave_index})
-		  		three = fix_note({:note => note + 2, :oct => octave_index})
-		  		five = fix_note({:note => note + 4, :oct => octave_index})
-				chord_notes = [
-					@octaves[one[:oct]] + default_scale[one[:note] - 1],
-					@octaves[three[:oct]] + default_scale[three[:note] - 1],
-					@octaves[five[:oct]] + default_scale[five[:note] - 1]
-				]
+				chord_notes = build_chord(note, octave_index, default_scale)
 				track.chord(chord_notes, length)
 			else
 	  			track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
@@ -147,6 +140,16 @@ class Mrwatts
 
 	end
 
+	def build_chord(note, octave_index, default_scale)
+  		one = fix_note({:note => note, :oct => octave_index})
+  		three = fix_note({:note => note + 2, :oct => octave_index})
+  		five = fix_note({:note => note + 4, :oct => octave_index})
+		[
+			@octaves[one[:oct]] + default_scale[one[:note] - 1],
+			@octaves[three[:oct]] + default_scale[three[:note] - 1],
+			@octaves[five[:oct]] + default_scale[five[:note] - 1]
+		]
+	end
 
 	def fix_note(params)
 		note = params[:note]
