@@ -22,7 +22,7 @@ describe Mrwatts do
 		pending
 	end
 
-	id "should give the song a random name if you want it to" do
+	it "should give the song a random name if you want it to" do
 		pending
 	end
 

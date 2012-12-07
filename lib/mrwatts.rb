@@ -4,9 +4,9 @@ include MIDI
 
 class Mrwatts
 
-	def initialize(song_name = "crab_cakes")
+	def initialize
 		@song = MIDI::Sequence.new()
-		@song_name = song_name
+		@song_name = format_title_for_file("Crab Cakes")
 		@scales = get_scales
 		@bpm = 120
 
@@ -29,7 +29,8 @@ class Mrwatts
 		r = Random.new
 		melody = []
 		#length = 16
-		roots = [1, 3, 5, 8] #the root notes for the phrases
+		roots = [1, 3, 5, 8] #the root notes for the phrases	
+
 		roots.each { |root| 
 			s = random_sequence
 			sequences = s[r.rand(s.length)]
@@ -77,6 +78,7 @@ class Mrwatts
 		# 2. Percussion
 		# 3. Chords
 		# 4. Motifs/themes -- snippets that are reused to make a coherent melody
+		# 5. REFACTOR/CLEAN UP
 		sequences = [
 			[
 				{:note => 1, :length => @note_lengths[:quarter]},
@@ -99,7 +101,7 @@ class Mrwatts
 		#sequences[r.rand(sequences.length)]
 	end
 
-	def build_track(note_array, track, scale, channel)
+	def build_track(note_array, track, scale, chords = false, channel)
 
 	  	default_scale = @scales[scale]
 
@@ -109,19 +111,27 @@ class Mrwatts
 			mod = offset[:mod] || 0 #modulation: sharp or flat
 			octave_index = offset[:octave] || 4
 			velocity = offset[:velocity] || @velocity
-			puts velocity
-			
+
 		  	fixed_note = fix_note({:note => note, :oct => octave_index})
 
 		  	note = fixed_note[:note]
 		  	oct = @octaves[fixed_note[:oct]]
 
-			# chord_notes = [default_scale[fix_note(off)], default_scale[fix_note(off + 2)], default_scale[fix(off + 4)]]
-			# track.chord(chord_notes)
-			
-			puts "track: oct = #{oct} note = #{note}, scale note = #{default_scale[note]}, mod = #{mod}"
-	  		track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
-	  		track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, velocity, length)
+		  	if chords then
+		  		one = fix_note({:note => note, :oct => octave_index})
+		  		three = fix_note({:note => note + 2, :oct => octave_index})
+		  		five = fix_note({:note => note + 4, :oct => octave_index})
+				chord_notes = [
+					@octaves[one[:oct]] + default_scale[one[:note] - 1],
+					@octaves[three[:oct]] + default_scale[three[:note] - 1],
+					@octaves[five[:oct]] + default_scale[five[:note] - 1]
+				]
+				puts "length: #{length}"
+				track.chord(chord_notes, length)
+			else
+	  			track.events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
+	  			track.events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, velocity, length)
+	  		end
 		end
 
 	end
@@ -134,10 +144,6 @@ class Mrwatts
 		while note > 7 do
 			note -= 7
 			oct += 1
-		end
-
-		while note < 0 do
-			#add to note, subtract from oct
 		end
 
 		{:note => note, :oct => oct}
@@ -157,11 +163,9 @@ class Mrwatts
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
 
 		#melody
-		# Create a track to hold the notes. Add it to the sequence.
 		melody_track = ReggieTrack.new(seq, @song)
 		seq.tracks << melody_track
 
-		# Give the track a name and an instrument name (optional).
 		melody_track.name = 'Melody Track'
 		melody_track.instrument = GM_PATCH_NAMES[0]
 
@@ -174,7 +178,7 @@ class Mrwatts
 
 		#bassline
 		bassline_track = ReggieTrack.new(seq, @song)
-		seq.tracks << bassline_track
+		#seq.tracks << bassline_track
 
 		bassline_track.name = 'Bassline Track'
 		bassline_track.instrument = GM_PATCH_NAMES[0]
@@ -185,6 +189,16 @@ class Mrwatts
 
 		build_track(@bassline, bassline_track, scale, 1)
 
+		#chords
+		chord_track = ReggieTrack.new(seq, @song)
+		seq.tracks << chord_track
+
+		chord_track.name = 'Chord Track'
+		chord_track.instrument = GM_PATCH_NAMES[0]
+
+		chord_track.events << ProgramChange.new(1, 83, 1)
+		build_track(@bassline, chord_track, scale, true, 2)
+
 		File.open("#{@song_name}.mid", 'wb') { | file | seq.write(file) }
 
 		puts "Built."
@@ -194,6 +208,10 @@ class Mrwatts
 		puts "What sound does a squirrel make?"
 	end
 
+	def format_title_for_file(name)
+		"crab_cakes"
+	end
+
 	def random_name
 		r = Random.new
 		names = [
@@ -201,7 +219,8 @@ class Mrwatts
 			"Squirrel",
 			"Get your shoes on!",
 			"Humans",
-			"High Time"
+			"High Time",
+			"Crab Cakes"
 		]
 		names[r.rand(names.length)]
 	end
