@@ -1,2 +1,2 @@
-require 'rubygems'
-require 'bundler'
+#require 'rubygems'
+#require 'bundler'
