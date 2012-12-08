@@ -1,8 +1,8 @@
---Known Bugs
+##Known Bugs
 <ol>
 	<li>Some scale/progression/melody combinations sound really terrible.</li>
 </ol>
--- TODO:
+##TODO:
 <ol>
 	<li>Have chords, bassline and melody be based on a common progression</li>
 	<li>Support for a single sequence being in a different mode, to do things like switch to dorian for the IV chord</li>

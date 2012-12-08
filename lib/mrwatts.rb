@@ -23,8 +23,6 @@ class Mrwatts
 			"eighth" => s.note_to_delta('eighth'),
 			"sixteenth" => s.note_to_delta('sixteenth')
 		}
-
-		puts "Hello, how you be"
 	end
 
 	def scale=(scale)
@@ -142,7 +140,6 @@ class Mrwatts
 
 		melody_track.events << ProgramChange.new(0, 10, 0)
 
-		puts "building melody"
 		@melodyA = build_melody
 		@melodyB = build_melody
 
@@ -180,10 +177,9 @@ class Mrwatts
 		2.times { build_track(@basslineB, chord_track, @scale, true, 2) }
 	end
 
-	def build(scale = "harmonic_minor")
-		@scale = @scales[scale]
+	def compose(scale = "harmonic_minor")
+		@scale = @sscale
 		@velocity = 127
-		@scale=(scale)
 
 		@seq = Sequence.new()
 		track = ReggieTrack.new(@seq, @song)
@@ -198,7 +194,7 @@ class Mrwatts
 
 		File.open("#{@song_name}.mid", 'wb') { | file | @seq.write(file) }
 
-		puts "Built."
+		puts "Song composed."
 	end
 
 	def tell_joke
