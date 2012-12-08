@@ -143,10 +143,11 @@ class Mrwatts
 		melody_track.events << ProgramChange.new(0, 10, 0)
 
 		puts "building melody"
-		@melody = build_melody
+		@melodyA = build_melody
+		@melodyB = build_melody
 
-	 	#TODO:make this less awful
-		build_track(@melody, melody_track, @scale, 0)
+	 	2.times { build_track(@melodyA, melody_track, @scale, 0) }
+	 	2.times { build_track(@melodyB, melody_track, @scale, 0) }
 	end
 
 	def write_bassline
@@ -159,9 +160,11 @@ class Mrwatts
 
 		bassline_track.events << ProgramChange.new(1, 83, 1)
 
-		@bassline = build_bassline
+		@basslineA = build_bassline
+		@basslineB = build_bassline
 
-		build_track(@bassline, bassline_track, @scale, 1)
+		2.times { build_track(@basslineA, bassline_track, @scale, 1) }
+		2.times { build_track(@basslineB, bassline_track, @scale, 1) }
 	end
 
 	def write_chords
@@ -173,7 +176,8 @@ class Mrwatts
 		chord_track.instrument = GM_PATCH_NAMES[0]
 
 		chord_track.events << ProgramChange.new(1, 83, 1)
-		build_track(@bassline, chord_track, @scale, true, 2)
+		2.times { build_track(@basslineA, chord_track, @scale, true, 2) }
+		2.times { build_track(@basslineB, chord_track, @scale, true, 2) }
 	end
 
 	def build(scale = "harmonic_minor")

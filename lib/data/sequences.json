@@ -1,19 +1,9 @@
 [
-	[
-		{"note": 1, "length": "quarter"},
-		{"note": 6, "length": "quarter"}, 
-		{"note": 5, "length": "half"}
-	],
-	[
-		{"note": 1, "length": "half"},
-		{"note": 2, "velocity" : "0", "length": "quarter"},
-		{"note": 3, "length": "eighth"},
-		{"note": 5, "length": "eighth"}
-	],
+	//Quarters
 	[
 		{"note": 1, "length": "quarter"},
 		{"note": 3, "length": "quarter"},
-		{"note": 0, "velocity": "0", "length": "quarter"},
+		{"note": 0, "velocity": 0, "length": "quarter"},
 		{"note": 3, "length": "quarter"}				
 	],
 	[
@@ -40,10 +30,25 @@
 		{"note": 1, "length": "quarter"},
 		{"note": 5, "length": "quarter"}
 	],
+	//Eighths
 	[
-		{"note": 0, "velocity": 0, "length": "half"},
-		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 8, "length": "eighth"},
+		{"note": 7, "length": "eighth"},
+		{"note": 6, "length": "eighth"},
+		{"note": 5, "length": "eighth"},
+		{"note": 7, "length": "eighth"},
+		{"note": 6, "length": "eighth"},
+		{"note": 5, "length": "eighth"},
+		{"note": 4, "length": "eighth"}
+	],
+	[
+		{"note": 1, "length": "eighth"},
+		{"note": 2, "length": "eighth"},
 		{"note": 3, "length": "eighth"},
+		{"note": 4, "length": "eighth"},
+		{"note": 2, "length": "eighth"},
+		{"note": 3, "length": "eighth"},
+		{"note": 4, "length": "eighth"},
 		{"note": 5, "length": "eighth"}
 	],
 	[
@@ -54,5 +59,54 @@
 		{"note": 5, "length": "quarter"},
 		{"note": 4, "length": "eighth"},
 		{"note": 3, "length": "eighth"}
+	],
+	//Quarters/Eigths
+	[	
+		{"note": 8, "length": "eighth"},
+		{"note": 7, "length": "eighth"},
+		{"note": 6, "length": "quarter"},
+		{"note": 7, "length": "eighth"},
+		{"note": 6, "length": "eighth"},
+		{"note": 5, "length": "quarter"}
+	],
+	//Quarters/halfs
+	[
+		{"note": 1, "length": "quarter"},
+		{"note": 6, "length": "quarter"}, 
+		{"note": 5, "length": "half"}
+	],
+	//Quarters/halfs/eighths
+	[
+		{"note": 1, "length": "half"},
+		{"note": 2, "velocity" : 0, "length": "quarter"},
+		{"note": 3, "length": "eighth"},
+		{"note": 5, "length": "eighth"}
+	],
+	[
+		{"note": 5, "length": "half"},
+		{"note": 0, "velocity" : "0", "length": "quarter"},
+		{"note": 4, "length": "eighth"},
+		{"note": 3, "length": "eighth"}
+	],
+	[
+		{"note": 0, "velocity": 0, "length": "half"},
+		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 3, "length": "eighth"},
+		{"note": 5, "length": "eighth"}
+	],
+	//Rests
+	[
+		{"note": 0, "velocity": 0, "length": "whole"}
+	],
+	[
+		{"note": 0, "velocity": 0, "length": "half"},
+		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 5, "velocity": 0, "length": "quarter"}
+	],
+	[
+		{"note": 0, "velocity": 0, "length": "half"},
+		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 0, "velocity": 0, "length": "eighth"},
+		{"note": 5, "length": "eighth"}
 	]
 ]
