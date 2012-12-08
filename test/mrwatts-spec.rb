@@ -7,11 +7,11 @@ describe Mrwatts do
 	end
 
 	it "should be able to build a song without a specified scale" do
-		pending  #@rw.build
+		@rw.build
 	end
 
 	it "should be able to build a song using a specified scale" do
-		pending #@rw.build("lydian")
+		@rw.build("lydian")
 	end
 
 	it "should be able to build a song with a slow, medium, or fast tempo" do

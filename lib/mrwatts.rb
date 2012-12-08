@@ -142,6 +142,7 @@ class Mrwatts
 
 		melody_track.events << ProgramChange.new(0, 10, 0)
 
+		puts "building melody"
 		@melody = build_melody
 
 	 	#TODO:make this less awful
@@ -193,7 +194,7 @@ class Mrwatts
 
 		File.open("#{@song_name}.mid", 'wb') { | file | @seq.write(file) }
 
-		puts "Song composed."
+		puts "Built."
 	end
 
 	def tell_joke
