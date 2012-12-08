@@ -15,5 +15,46 @@
 		{"note": 3, "length": "quarter"},
 		{"note": 0, "velocity": "0", "length": "quarter"},
 		{"note": 3, "length": "quarter"}				
+	],
+	//Simple sequences - quarter
+	[
+		{"note": 5, "length": "quarter"},
+		{"note": 3, "length": "quarter"},
+		{"note": 1, "length": "quarter"},
+		{"note": 3, "length": "quarter"}
+	],
+	[
+		{"note": 1, "length": "quarter"},
+		{"note": 2, "length": "quarter"},
+		{"note": 3, "length": "quarter"},
+		{"note": 4, "length": "quarter"}
+	],
+	[
+		{"note": 1, "length": "quarter"},
+		{"note": 3, "length": "quarter"},
+		{"note": 1, "length": "quarter"},
+		{"note": 5, "length": "quarter"}
+	],
+	[
+		{"note": 3, "length": "quarter"},
+		{"note": 2, "length": "quarter"},
+		{"note": 1, "length": "quarter"},
+		{"note": 5, "length": "quarter"}
+	],
+	[
+		{"note": 0, "velocity": 0, "length": "half"},
+		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 3, "length": "eighth"},
+		{"note": 5, "length": "eighth"}
+	],
+	//Eighths
+	[
+		{"note": 1, "length": "eighth"},
+		{"note": 2, "length": "eighth"},
+		{"note": 3, "length": "eighth"},
+		{"note": 0, "velocity": 0, "length": "eighth"},
+		{"note": 5, "length": "quarter"},
+		{"note": 4, "length": "eighth"},
+		{"note": 3, "length": "eighth"}
 	]
 ]

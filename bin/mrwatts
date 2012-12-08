@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'Mrwatts'
+
+rw = Mrwatts.new
+puts rw.build(ARGV[0])

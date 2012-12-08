@@ -61,23 +61,23 @@ class Mrwatts
 		end
 	end
 
-	def get_scales
-		file = open("lib/data/scales.json")
+	def get_json(filename)
+		file = open("lib/data/#{filename}.json")
 		json = file.read
-		scales = JSON.parse(json)
+		JSON.parse(json)
+	end
+
+	def get_scales
+		scales = get_json("scales")
 	end
 
 	def get_sequences
-		file = open("lib/data/sequences.json")
-		json = file.read
-		sequences = JSON.parse(json)
+		sequences = get_json("sequences")
 		sequences = format_json(sequences)
 	end
 
 	def build_bassline
-		file = open("lib/data/basslines.json")
-		json = file.read
-		sequences = JSON.parse(json)
+		sequences = get_json("basslines")
 		sequences = format_json(sequences)
 
 		sequences[Random.rand(sequences.length)]
@@ -94,9 +94,8 @@ class Mrwatts
 			octave_index = offset["octave"] || 4
 			velocity = offset["velocity"] || @velocity
 
-			puts "note: #{note}, octave: #{octave_index}, length: #{length}"
 		  	fixed_note = fix_note({"note" => note, "oct" => octave_index})
-		  	puts "oct: #{@octaves[fixed_note["oct"]]}"
+
 		  	note = fixed_note["note"]
 		  	oct = @octaves[fixed_note["oct"]]
 
@@ -135,7 +134,6 @@ class Mrwatts
 	end
 
 	def write_melody
-		#melody
 		melody_track = ReggieTrack.new(@seq, @song)
 		@seq.tracks << melody_track
 
@@ -144,7 +142,6 @@ class Mrwatts
 
 		melody_track.events << ProgramChange.new(0, 10, 0)
 
-		puts "building melody"
 		@melody = build_melody
 
 	 	#TODO:make this less awful
@@ -162,13 +159,12 @@ class Mrwatts
 		bassline_track.events << ProgramChange.new(1, 83, 1)
 
 		@bassline = build_bassline
-		puts "building bassline"
+
 		build_track(@bassline, bassline_track, @scale, 1)
 	end
 
 	def write_chords
 		#chords
-		puts "building chord track"
 		chord_track = ReggieTrack.new(@seq, @song)
 		@seq.tracks << chord_track
 
@@ -189,8 +185,6 @@ class Mrwatts
 		@seq.tracks << track
 		track.events << Tempo.new(Tempo.bpm_to_mpq(@bpm))
 		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
-
-		# Add a volume controller event (optional).
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
 
 		write_melody
@@ -199,7 +193,7 @@ class Mrwatts
 
 		File.open("#{@song_name}.mid", 'wb') { | file | @seq.write(file) }
 
-		puts "Built."
+		puts "Song composed."
 	end
 
 	def tell_joke

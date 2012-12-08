@@ -1,30 +1,45 @@
-[
-	[
-		{"note": 1, "octave": 2, "length": "whole"},
-		{"note": 3, "octave": 2, "length": "half"},
-		{"note": 4, "octave": 2, "length": "half"},
-		{"note": 1, "octave": 2, "length": "whole"},
-		{"note": 3, "octave": 2, "length": "half"},
-		{"note": 4, "octave": 2, "length": "half"}
+{
+	"major": [
+		[
+			{"note": 1, "octave": 2, "length": "half"},
+			{"note": 1, "octave": 3, "length": "quarter"},
+			{"note": 7, "octave": 2, "length": "quarter"},
+			{"note": 6, "octave": 2, "length": "half"},
+			{"note": 3, "octave": 2, "length": "half"},
+			{"note": 1, "octave": 2, "length": "half"}, //Repeat
+			{"note": 1, "octave": 3, "length": "quarter"},
+			{"note": 7, "octave": 2, "length": "quarter"},
+			{"note": 6, "octave": 2, "length": "half"},
+			{"note": 3, "octave": 2, "length": "half"}
+		]
 	],
-	[
-		{"note": 1, "octave": 2, "length": "whole"},
-		{"note": 6, "octave": 2, "length": "whole"},
-		{"note": 3, "octave": 2, "length": "whole"},
-		{"note": 3, "octave": 2, "length": "half"},
-		{"note": 4, "octave": 2, "length": "half"}
-	],
-	[
+	"minor": [
 		{"note": 1, "octave": 2, "length": "half"},
-		{"note": 1, "octave": 3, "length": "quarter"},
-		{"note": 7, "octave": 2, "length": "quarter"},
-		{"note": 6, "octave": 2, "length": "half"},
+		{"note": 7, "octave": 1, "length": "half"},
 		{"note": 3, "octave": 2, "length": "half"},
-		{"note": 1, "octave": 2, "length": "half"}, //Repeat
-		{"note": 1, "octave": 3, "length": "quarter"},
-		{"note": 7, "octave": 2, "length": "quarter"},
-		{"note": 6, "octave": 2, "length": "half"},
-		{"note": 3, "octave": 2, "length": "half"}
+		{"note": 5, "octave": 2, "length": "half"}
+	],
+	"major/minor": [
+		[
+			{"note": 1, "octave": 2, "length": "whole"},
+			{"note": 3, "octave": 2, "length": "half"},
+			{"note": 4, "octave": 2, "length": "half"},
+			{"note": 1, "octave": 2, "length": "whole"},
+			{"note": 3, "octave": 2, "length": "half"},
+			{"note": 4, "octave": 2, "length": "half"}
+		],
+		[
+			{"note": 1, "octave": 2, "length": "whole"},
+			{"note": 6, "octave": 2, "length": "whole"},
+			{"note": 3, "octave": 2, "length": "whole"},
+			{"note": 3, "octave": 2, "length": "half"},
+			{"note": 4, "octave": 2, "length": "half"}
+		],
+		[
+			{"note": 1, "octave": 2, "length": "whole"},
+			{"note": 1, "mod": -1, "octave": 2, "length": "whole"},
+			{"note": 1, "mod": -2, "octave": 2, "length": "whole"},
+			{"note": 1, "mod": -3, "octave": 2, "length": "whole"}
+		]
 	]
-
-]
+}
