@@ -1,9 +1,9 @@
-#require "../lib/mrwatts.rb"
+require "./lib/mrwatts.rb"
 
 describe Mrwatts do
 
 	before do
-		#@rw = Mrwatts.new
+		@rw = Mrwatts.new
 	end
 
 	it "should be able to build a song without a specified scale" do
@@ -27,6 +27,6 @@ describe Mrwatts do
 	end
 
 	it "should tell a joke if you want it to" do
-		pending #@rw.tell_joke
+		@rw.tell_joke
 	end
 end
