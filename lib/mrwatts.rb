@@ -10,7 +10,6 @@ class Mrwatts
 		@song = MIDI::Sequence.new()
 		@song_name = format_title_for_file("Crab Cakes")
 		@scales = get_scales
-		@bpm = 120
 
 		@octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
 
@@ -21,12 +20,11 @@ class Mrwatts
 			"half" => s.note_to_delta('half'),
 			"quarter" => s.note_to_delta('quarter'),
 			"eighth" => s.note_to_delta('eighth'),
-			"sixteenth" => s.note_to_delta('sixteenth')
+			"sixteenth" => s.note_to_delta('sixteenth'),
+			"half triplet" => s.note_to_delta('half triplet'),
+			"quarter triplet" => s.note_to_delta('quarter triplet'),
+			"eighth triplet" => s.note_to_delta('eighth triplet')
 		}
-	end
-
-	def scale=(scale)
-		@scale = @scales[scale]
 	end
 
 	def format_json(sequences)
@@ -65,9 +63,9 @@ class Mrwatts
 	def build_melody
 		r = Random.new
 		melody = []
-		roots = [1, 3, 5, 7]
+		@roots = [1, 3, 5, 7]
 		starting_notes = []
-		4.times { starting_notes << roots[r.rand(roots.length)] }
+		4.times { starting_notes << r.rand(7) }
 
 		starting_notes.each do |note| 
 			s = get_sequences
@@ -76,7 +74,8 @@ class Mrwatts
 				melody << {
 					"note" => sequence["note"] + note - 1,
 					"velocity" => sequence["velocity"],
-					"length" => sequence["length"]
+					"length" => sequence["length"],
+					"mod" => sequence["mod"]
 				}
 			end
 		end
@@ -84,9 +83,9 @@ class Mrwatts
 		melody
 	end
 
-	def build_track(note_array, track, scale, channel, chords = false)
+	def build_track(note_array, track, channel, chords = false)
 
-	  	default_scale = @scales[scale]
+	  	#default_scale = @scales[@scale]
 
 		note_array.each do |offset|
 			note = offset["note"]
@@ -100,11 +99,11 @@ class Mrwatts
 		  	oct = @octaves[fixed_note["oct"]]
 
 		  	if chords then
-				chord_notes = build_chord(note, octave_index, default_scale)
+				chord_notes = build_chord(note, octave_index, @scale)
 				track.chord(chord_notes, length)
 			else
 	  			#this seems like too many parameters
-	  			track.add_note(channel, oct, default_scale, note, mod, velocity, length)
+	  			track.add_note(channel, oct, @scale, note, mod, velocity, length)
 	  		end
 		end
 
@@ -146,21 +145,26 @@ class Mrwatts
 	end
 
 	def write_melody
-		@tracks["melody"].events << ProgramChange.new(0, 10, 0)
-	 	2.times { build_track(@melodyA, @tracks["melody"], @scale, 0) }
-	 	2.times { build_track(@melodyB, @tracks["melody"], @scale, 0) }
+		#2.times { build_track(empty_measure, @tracks["melody"], @scale, 0) }
+
+		@tracks["melody"].events << ProgramChange.new(0, 16, 0)
+	 	2.times { build_track(@melodyA, @tracks["melody"], 0) }
+	 	2.times { build_track(@melodyB, @tracks["melody"], 0) }
+	 	ending_note
 	end
 
 	def write_bassline
-		@tracks["bassline"].events << ProgramChange.new(1, 83, 1)
-		2.times { build_track(@basslineA, @tracks["bassline"], @scale, 1) }
-		2.times { build_track(@basslineB, @tracks["bassline"], @scale, 1) }
+		@tracks["bassline"].events << ProgramChange.new(1, 2, 1)
+		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
+		2.times { build_track(@basslineB, @tracks["bassline"], 1) }
+		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
 	end
 
 	def write_chords
-		@tracks["chords"].events << ProgramChange.new(1, 86, 1)
-		2.times { build_track(@basslineA, @tracks["chords"], @scale, 2, true) }
-		2.times { build_track(@basslineB, @tracks["chords"], @scale, 2, true) }
+		@tracks["chords"].events << ProgramChange.new(2, 96, 2)
+		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
+		2.times { build_track(@basslineB, @tracks["chords"], 2, true) }
+		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
 	end
 
 	def calculate_length(sequence)
@@ -171,8 +175,24 @@ class Mrwatts
 		length
 	end
 
-	def fade_in_tracks
-		build_track(empty_measure, @tracks["melody"], @scale, 0)
+	def empty_measure
+		[
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0}		
+		]
+	end
+
+	def fade_in_tracks 
+		#pending
+	end
+
+	def ending_note
+		r = Random.new
+		note = @roots[r.rand(@roots.length)]
+		e = [{"note"=> note, "length"=> @note_lengths["whole"]}]
+		build_track(e, @tracks["melody"], 0)
 	end
 
 	def fix_sequence_lengths
@@ -191,10 +211,26 @@ class Mrwatts
 		end
 	end
 
-	def compose(scale = "harmonic_minor", bpm = 120)
-		@scale = scale
-		@bpm = bpm || 120
-		@velocity = 127
+	def set_scale(scale = "aeolian")
+		scale = "aeolian" if scale == "minor"
+		scale = "ionian" if scale == "major"
+		@scales[scale]
+	end
+
+	def set_bpm(bpm)
+		bpm ||= 120
+		bpm = 150 if bpm == "fast"
+		bpm = 120 if bpm == "medium"
+		bpm = 90 if bpm == "slow"
+		bpm
+	end
+
+	def compose(params = {})
+
+		@scale = @scales[params["scale"] || "dorian"]
+		@bpm = set_bpm(params["bpm"])
+		@velocity = params["volume"] || 127
+		random == params["random_name"] || false
 
 		#required master tracks
 		@seq = Sequence.new()
@@ -211,23 +247,21 @@ class Mrwatts
 		@melodyA = build_melody
 		@melodyB = build_melody
 
-		@basslineA = get_basslines[0]
+		@basslineA = choose_bassline(get_basslines)
 		@basslineB = choose_bassline(get_basslines)
 
-		fade_in_tracks
+		#fade_in_tracks
 		fix_sequence_lengths
 
 		write_melody
 		write_bassline
 		write_chords
 
+		ending_note
+
 		File.open("#{@song_name}.mid", 'wb') { |file| @seq.write(file) }
 
 		puts "Song composed."
-	end
-
-	def empty_measure 
-		[{"note"=> 0, "length"=> "whole", "velocity"=> 0}]
 	end
 
 	def tell_joke

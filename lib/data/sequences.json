@@ -19,12 +19,6 @@
 		{"note": 4, "length": "quarter"}
 	],
 	[
-		{"note": 1, "length": "quarter"},
-		{"note": 3, "length": "quarter"},
-		{"note": 1, "length": "quarter"},
-		{"note": 5, "length": "quarter"}
-	],
-	[
 		{"note": 3, "length": "quarter"},
 		{"note": 2, "length": "quarter"},
 		{"note": 1, "length": "quarter"},
@@ -44,12 +38,29 @@
 	[
 		{"note": 1, "length": "eighth"},
 		{"note": 2, "length": "eighth"},
-		{"note": 3, "length": "eighth"},
+		{"note": 3, "length": "quarter"},
+		{"note": 5, "length": "quarter"},
+		{"note": 3, "length": "quarter"}
+	],
+	[
+		{"note": 4, "length": "half"},
 		{"note": 4, "length": "eighth"},
+		{"note": 6, "length": "eighth"},
+		{"note": 5, "length": "quarter"}
+	],
+	[
+		{"note": 3, "length": "half triplet"},
 		{"note": 2, "length": "eighth"},
-		{"note": 3, "length": "eighth"},
-		{"note": 4, "length": "eighth"},
-		{"note": 5, "length": "eighth"}
+		{"note": 3, "length": "quarter"},
+		{"note": 4, "length": "quarter"}
+	],
+	[
+		{"note": 7, "length": "half triplet"},
+		{"note": 5, "length": "half triplet"},
+		{"note": 3, "length": "half triplet"},
+		{"note": 5, "length": "half triplet"},
+		{"note": 3, "length": "half triplet"},
+		{"note": 1, "length": "half triplet"}
 	],
 	[
 		{"note": 1, "length": "eighth"},
@@ -60,7 +71,7 @@
 		{"note": 4, "length": "eighth"},
 		{"note": 3, "length": "eighth"}
 	],
-	//Quarters/Eigths
+	//Quarters/Eighths
 	[	
 		{"note": 8, "length": "eighth"},
 		{"note": 7, "length": "eighth"},
@@ -104,8 +115,11 @@
 	],
 	//Rests
 	[
+		{"note": 3, "length": "eighth"},
+		{"note": 5, "length": "eighth"},
 		{"note": 0, "length": "half", "velocity": 0},
-		{"note": 3, "length": "half"}
+		{"note": 5, "length": "eighth"},
+		{"note": 3, "length": "eighth"}
 	],
 	[
 		{"note": 0, "length": "half", "velocity": 0},
