@@ -1,5 +1,4 @@
 class ReggieTrack < MIDI::Track
-	  MIDDLE_C = 60
 	  @@channel_counter=0
 
 	  def initialize(number, song)

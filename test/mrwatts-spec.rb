@@ -11,11 +11,17 @@ describe Mrwatts do
 	end
 
 	it "should be able to build a song using a specified scale" do
-		@rw.compose("lydian")
+		@rw.compose("ionian")
 	end
 
-	it "should be able to build a song with a slow, medium, or fast tempo" do
-		pending
+	describe "tempo" do
+		it "should be able to compose a song with a slow, medium, or fast tempo" do
+			pending
+		end
+
+		it "should be able to compose a song with a specified tempo" do
+			pending
+		end
 	end
 
 	it "should be able to build a song with a specific bpm" do

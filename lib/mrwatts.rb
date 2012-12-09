@@ -29,27 +29,6 @@ class Mrwatts
 		@scale = @scales[scale]
 	end
 
-	def build_melody
-		r = Random.new
-		melody = []
-		#length = 16
-		roots = [1, 3, 5, 8] #the root notes for the phrases	
-
-		roots.each { |root| 
-			s = get_sequences
-			sequences = s[r.rand(s.length)]
-			sequences.each { |sequence|
-				melody << {
-					"note" => sequence["note"] + root - 1,
-					"velocity" => sequence["velocity"],
-					"length" => sequence["length"]
-				}
-			}
-		}
-
-		melody
-	end
-
 	def format_json(sequences)
 		sequences.each do |sequence|
 			sequence.each do |note|
@@ -74,11 +53,35 @@ class Mrwatts
 		sequences = format_json(sequences)
 	end
 
-	def build_bassline
+	def get_basslines
 		sequences = get_json("basslines")
 		sequences = format_json(sequences)
+	end
 
+	def choose_bassline(sequences)
 		sequences[Random.rand(sequences.length)]
+	end
+
+	def build_melody
+		r = Random.new
+		melody = []
+		roots = [1, 3, 5, 7]
+		starting_notes = []
+		4.times { starting_notes << roots[r.rand(roots.length)] }
+
+		starting_notes.each do |note| 
+			s = get_sequences
+			sequences = get_sequences[r.rand(s.length)]
+			sequences.each do |sequence|
+				melody << {
+					"note" => sequence["note"] + note - 1,
+					"velocity" => sequence["velocity"],
+					"length" => sequence["length"]
+				}
+			end
+		end
+
+		melody
 	end
 
 	def build_track(note_array, track, scale, chords = false, channel)
@@ -93,7 +96,6 @@ class Mrwatts
 			velocity = offset["velocity"] || @velocity
 
 		  	fixed_note = fix_note({"note" => note, "oct" => octave_index})
-
 		  	note = fixed_note["note"]
 		  	oct = @octaves[fixed_note["oct"]]
 
@@ -119,6 +121,8 @@ class Mrwatts
 		]
 	end
 
+	# Makes sure the note fits into a 7-note scale,
+	# adjusts the octave if it is above 7 notes
 	def fix_note(params)
 		note = params["note"]
 		oct = params["oct"]
@@ -131,56 +135,64 @@ class Mrwatts
 		{"note" => note, "oct" => oct}
 	end
 
+	def init_tracks
+		@tracks.each do |index, track|
+			track = ReggieTrack.new(@seq, @song)
+			@seq.tracks << track
+			track.instrument = GM_PATCH_NAMES[0]
+			@tracks[index] = track
+		end
+		@tracks
+	end
+
 	def write_melody
-		melody_track = ReggieTrack.new(@seq, @song)
-		@seq.tracks << melody_track
-
-		melody_track.name = 'Melody Track'
-		melody_track.instrument = GM_PATCH_NAMES[0]
-
-		melody_track.events << ProgramChange.new(0, 10, 0)
-
-		@melodyA = build_melody
-		@melodyB = build_melody
-
-	 	2.times { build_track(@melodyA, melody_track, @scale, 0) }
-	 	2.times { build_track(@melodyB, melody_track, @scale, 0) }
+		@tracks["melody"].events << ProgramChange.new(0, 10, 0)
+	 	2.times { build_track(@melodyA, @tracks["melody"], @scale, 0) }
+	 	2.times { build_track(@melodyB, @tracks["melody"], @scale, 0) }
 	end
 
 	def write_bassline
-		#bassline
-		bassline_track = ReggieTrack.new(@seq, @song)
-		@seq.tracks << bassline_track
-
-		bassline_track.name = 'Bassline Track'
-		bassline_track.instrument = GM_PATCH_NAMES[0]
-
-		bassline_track.events << ProgramChange.new(1, 83, 1)
-
-		@basslineA = build_bassline
-		@basslineB = build_bassline
-
-		2.times { build_track(@basslineA, bassline_track, @scale, 1) }
-		2.times { build_track(@basslineB, bassline_track, @scale, 1) }
+		@tracks["bassline"].events << ProgramChange.new(1, 83, 1)
+		2.times { build_track(@basslineA, @tracks["bassline"], @scale, 1) }
+		2.times { build_track(@basslineB, @tracks["bassline"], @scale, 1) }
 	end
 
 	def write_chords
-		#chords
-		chord_track = ReggieTrack.new(@seq, @song)
-		@seq.tracks << chord_track
-
-		chord_track.name = 'Chord Track'
-		chord_track.instrument = GM_PATCH_NAMES[0]
-
-		chord_track.events << ProgramChange.new(1, 83, 1)
-		2.times { build_track(@basslineA, chord_track, @scale, true, 2) }
-		2.times { build_track(@basslineB, chord_track, @scale, true, 2) }
+		@tracks["chords"].events << ProgramChange.new(1, 86, 1)
+		2.times { build_track(@basslineA, @tracks["chords"], @scale, true, 2) }
+		2.times { build_track(@basslineB, @tracks["chords"], @scale, true, 2) }
 	end
 
-	def compose(scale = "harmonic_minor")
+	def calculate_length(sequence)
+		length = 0
+		sequence.each do |note|
+			length += note["length"]
+		end
+		length
+	end
+
+	def fix_sequence_lengths
+		if (calculate_length(@basslineA) < calculate_length(@basslineB))
+			aLength = calculate_length(@basslineA)
+			bLength = calculate_length(@basslineB)
+			diff = bLength - aLength
+			#note: messy
+			if diff == (aLength)
+				temp = @basslineA.dup
+				@basslineA.each do |note|
+					temp.push(note)
+				end
+				@basslineA = temp.dup
+			end
+		end
+	end
+
+	def compose(scale = "harmonic_minor", bpm = 120)
 		@scale = scale
+		@bpm = bpm || 120
 		@velocity = 127
 
+		#required master tracks
 		@seq = Sequence.new()
 		track = ReggieTrack.new(@seq, @song)
 		@seq.tracks << track
@@ -188,13 +200,29 @@ class Mrwatts
 		track.events << MetaEvent.new(META_SEQ_NAME, @song_name)
 		track.events << Controller.new(0, CC_VOLUME, @velocity)
 
+		#instrumental tracks
+		@tracks = {"bassline" => nil, "chords" => nil, "melody" => nil}
+		init_tracks
+
+		@melodyA = build_melody
+		@melodyB = build_melody
+
+		@basslineA = get_basslines[0]
+		@basslineB = choose_bassline(get_basslines)
+
+		fix_sequence_lengths
+
 		write_melody
 		write_bassline
 		write_chords
 
-		File.open("#{@song_name}.mid", 'wb') { | file | @seq.write(file) }
+		File.open("#{@song_name}.mid", 'wb') { |file| @seq.write(file) }
 
 		puts "Song composed."
+	end
+
+	def empty_measure 
+		[{"note"=> 0, "length"=> "whole", "velocity"=> 0}]
 	end
 
 	def tell_joke
