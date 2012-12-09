@@ -27,10 +27,11 @@ describe Mrwatts do
 	end
 
 	it "should produce chord progressions, melodies, and basslines that are the same length" do
-
+		pending
 	end
 
 	it "should tell a joke if you want it to" do
 		@rw.tell_joke
 	end
+
 end

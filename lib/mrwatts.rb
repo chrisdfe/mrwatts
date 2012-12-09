@@ -178,7 +178,7 @@ class Mrwatts
 	end
 
 	def compose(scale = "harmonic_minor")
-		@scale = @sscale
+		@scale = scale
 		@velocity = 127
 
 		@seq = Sequence.new()

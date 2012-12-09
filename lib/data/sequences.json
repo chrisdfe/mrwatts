@@ -3,7 +3,7 @@
 	[
 		{"note": 1, "length": "quarter"},
 		{"note": 3, "length": "quarter"},
-		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 0, "length": "quarter", "velocity": 0},
 		{"note": 3, "length": "quarter"}				
 	],
 	[
@@ -55,7 +55,7 @@
 		{"note": 1, "length": "eighth"},
 		{"note": 2, "length": "eighth"},
 		{"note": 3, "length": "eighth"},
-		{"note": 0, "velocity": 0, "length": "eighth"},
+		{"note": 0, "length": "eighth", "velocity": 0},
 		{"note": 5, "length": "quarter"},
 		{"note": 4, "length": "eighth"},
 		{"note": 3, "length": "eighth"}
@@ -75,38 +75,47 @@
 		{"note": 6, "length": "quarter"}, 
 		{"note": 5, "length": "half"}
 	],
+	[
+		{"note": 1, "length": "eighth"},
+		{"note": 2, "length": "eighth"},
+		{"note": 3, "length": "eighth"},
+		{"note": 4, "length": "eighth"},
+		{"note": 3, "length": "quarter"},
+		{"note": 2, "length": "quarter"}
+	],
 	//Quarters/halfs/eighths
 	[
 		{"note": 1, "length": "half"},
-		{"note": 2, "velocity" : 0, "length": "quarter"},
+		{"note": 2, "length": "quarter", "velocity" : 0},
 		{"note": 3, "length": "eighth"},
 		{"note": 5, "length": "eighth"}
 	],
 	[
 		{"note": 5, "length": "half"},
-		{"note": 0, "velocity" : "0", "length": "quarter"},
+		{"note": 0, "length": "quarter", "velocity" : 0},
 		{"note": 4, "length": "eighth"},
 		{"note": 3, "length": "eighth"}
 	],
 	[
-		{"note": 0, "velocity": 0, "length": "half"},
-		{"note": 0, "velocity": 0, "length": "quarter"},
+		{"note": 0, "length": "half", "velocity": 0},
+		{"note": 0, "length": "quarter", "velocity": 0},
 		{"note": 3, "length": "eighth"},
 		{"note": 5, "length": "eighth"}
 	],
 	//Rests
 	[
-		{"note": 0, "velocity": 0, "length": "whole"}
+		{"note": 0, "length": "half", "velocity": 0},
+		{"note": 3, "length": "half"}
 	],
 	[
-		{"note": 0, "velocity": 0, "length": "half"},
-		{"note": 0, "velocity": 0, "length": "quarter"},
-		{"note": 5, "velocity": 0, "length": "quarter"}
+		{"note": 0, "length": "half", "velocity": 0},
+		{"note": 0, "length": "quarter", "velocity": 0},
+		{"note": 5, "length": "quarter"}
 	],
 	[
-		{"note": 0, "velocity": 0, "length": "half"},
-		{"note": 0, "velocity": 0, "length": "quarter"},
-		{"note": 0, "velocity": 0, "length": "eighth"},
+		{"note": 0, "length": "half", "velocity": 0},
+		{"note": 0, "length": "quarter", "velocity": 0},
+		{"note": 0, "length": "eighth", "velocity": 0},
 		{"note": 5, "length": "eighth"}
 	]
 ]
