@@ -84,7 +84,7 @@ class Mrwatts
 		melody
 	end
 
-	def build_track(note_array, track, scale, chords = false, channel)
+	def build_track(note_array, track, scale, channel, chords = false)
 
 	  	default_scale = @scales[scale]
 
@@ -159,8 +159,8 @@ class Mrwatts
 
 	def write_chords
 		@tracks["chords"].events << ProgramChange.new(1, 86, 1)
-		2.times { build_track(@basslineA, @tracks["chords"], @scale, true, 2) }
-		2.times { build_track(@basslineB, @tracks["chords"], @scale, true, 2) }
+		2.times { build_track(@basslineA, @tracks["chords"], @scale, 2, true) }
+		2.times { build_track(@basslineB, @tracks["chords"], @scale, 2, true) }
 	end
 
 	def calculate_length(sequence)
@@ -169,6 +169,10 @@ class Mrwatts
 			length += note["length"]
 		end
 		length
+	end
+
+	def fade_in_tracks
+		build_track(empty_measure, @tracks["melody"], @scale, 0)
 	end
 
 	def fix_sequence_lengths
@@ -210,6 +214,7 @@ class Mrwatts
 		@basslineA = get_basslines[0]
 		@basslineB = choose_bassline(get_basslines)
 
+		fade_in_tracks
 		fix_sequence_lengths
 
 		write_melody
