@@ -1,6 +1,12 @@
 [
 	//Whole
 	[
+		{"note": 2, "octave": 2, "length": "whole"},
+		{"note": 5, "octave": 2, "length": "whole"},
+		{"note": 1, "octave": 2, "length": "whole"},
+		{"note": 1, "octave": 2, "length": "whole"}
+	],
+	[
 		{"note": 1, "octave": 2, "length": "whole"},
 		{"note": 1, "octave": 2, "length": "whole"},
 		{"note": 4, "octave": 2, "length": "whole"},

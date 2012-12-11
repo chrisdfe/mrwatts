@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require './lib/mrwatts.rb'
+require "#{File.expand_path('../../', __FILE__)}/lib/mrwatts.rb"
 require 'optparse'
 
 rw = Mrwatts.new
@@ -8,13 +8,12 @@ rw = Mrwatts.new
 options = {}
 
 opt_parser = OptionParser.new do |opt|
-	opt.banner = "Usage: opt_parser COMMAND [OPTIONS]"
-	opt.separator  ""
-	opt.separator  "Commands"
-	opt.separator  "     scale: the scale you want your song to use"
-	opt.separator  "     the bpm (tempo) you want your song to have"
+	opt.banner = "Usage: mrwatts [OPTIONS]"
 	opt.separator  ""
 	opt.separator  "Options"
+	opt.separator  "     scale: the scale you want your song to use"
+	opt.separator  "     bpm: the bpm (tempo) you want your song to have"
+	opt.separator  ""
 
 	opt.on("-s","--scale SCALE","the scale you want to use") do |scale|
 		options["scale"] = scale
@@ -24,7 +23,7 @@ opt_parser = OptionParser.new do |opt|
 		options["bpm"] = bpm
 	end
 
-	opt.on("-h","--help","help") do
+	opt.on("-h","--help","Prints the stuff out you're looking at right now") do
 		puts opt_parser
 	end
 end

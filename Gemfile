@@ -1,6 +1,6 @@
 source :rubygems
 
-gem "midilib", ">=1.0"
+gem "midilib"
 gem "json"
 
 group :test do

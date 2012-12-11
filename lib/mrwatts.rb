@@ -8,25 +8,27 @@ class Mrwatts
 
 	def initialize
 		@song = MIDI::Sequence.new()
-		@song_name = format_title_for_file("Crab Cakes")
 		@scales = get_scales
-
+		@note_lengths = get_note_lengths
 		@octaves = [16, 28, 40, 52, 64, 76, 88, 100, 112, 124]
-
-	 	s = Sequence.new()
-
-		@note_lengths = {
-			"whole" => s.note_to_delta('whole'),
-			"half" => s.note_to_delta('half'),
-			"quarter" => s.note_to_delta('quarter'),
-			"eighth" => s.note_to_delta('eighth'),
-			"sixteenth" => s.note_to_delta('sixteenth'),
-			"half triplet" => s.note_to_delta('half triplet'),
-			"quarter triplet" => s.note_to_delta('quarter triplet'),
-			"eighth triplet" => s.note_to_delta('eighth triplet')
-		}
 	end
 
+	# Options handling
+	def set_scale(scale = "aeolian")
+		scale = "aeolian" if scale == "minor"
+		scale = "ionian" if scale == "major"
+		@scales[scale]
+	end
+
+	def set_bpm(bpm)
+		bpm ||= 120
+		bpm = 150 if bpm == "fast"
+		bpm = 120 if bpm == "medium"
+		bpm = 90 if bpm == "slow"
+		bpm
+	end
+
+	#JSON
 	def format_json(sequences)
 		sequences.each do |sequence|
 			sequence.each do |note|
@@ -60,6 +62,21 @@ class Mrwatts
 		sequences[Random.rand(sequences.length)]
 	end
 
+	def get_note_lengths
+	 	s = Sequence.new()
+		{
+			"whole" => s.note_to_delta('whole'),
+			"half" => s.note_to_delta('half'),
+			"quarter" => s.note_to_delta('quarter'),
+			"eighth" => s.note_to_delta('eighth'),
+			"sixteenth" => s.note_to_delta('sixteenth'),
+			"half triplet" => s.note_to_delta('half triplet'),
+			"quarter triplet" => s.note_to_delta('quarter triplet'),
+			"eighth triplet" => s.note_to_delta('eighth triplet')
+		}
+	end
+
+	#Phrase/melody building
 	def build_melody
 		r = Random.new
 		melody = []
@@ -108,6 +125,54 @@ class Mrwatts
 		{"note" => note, "oct" => oct}
 	end
 
+	def calculate_length(sequence)
+		#note: smelly
+		length = 0
+		sequence.each do |note|
+			length += note["length"]
+		end
+		length
+	end
+
+	#track snippet/manipulating methods
+	def empty_measure
+		[
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
+			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0}		
+		]
+	end
+
+	def ending_note
+		r = Random.new
+		note = @roots[r.rand(@roots.length)]
+		e = [{"note"=> note, "length"=> @note_lengths["whole"]}]
+		build_track(e, @tracks["melody"], 0)
+	end
+
+	def ending_chord
+		e = [{"note"=> 1, "octave" => 2, "length"=> @note_lengths["whole"]}]
+		build_track(e, @tracks["chords"], 2, true)
+	end
+
+	def fix_sequence_lengths
+		if (calculate_length(@basslineA) < calculate_length(@basslineB))
+			aLength = calculate_length(@basslineA)
+			bLength = calculate_length(@basslineB)
+			diff = bLength - aLength
+			#note: messy
+			if diff == (aLength)
+				temp = @basslineA.dup
+				@basslineA.each do |note|
+					temp.push(note)
+				end
+				@basslineA = temp.dup
+			end
+		end
+	end
+
+	#Track writers
 	def init_tracks
 		@tracks.each do |index, track|
 			track = ReggieTrack.new(@seq, @song)
@@ -118,9 +183,8 @@ class Mrwatts
 	end
 
 	def write_melody
-		#2.times { build_track(empty_measure, @tracks["melody"], @scale, 0) }
-
 		@tracks["melody"].events << ProgramChange.new(0, 17, 0)
+		2.times { build_track(empty_measure, @tracks["melody"], 0, false, 0) }
 	 	2.times { build_track(@melodyA, @tracks["melody"], 0, false, 100) }
 	 	2.times { build_track(@melodyB, @tracks["melody"], 0, false, 100) }
 	 	ending_note
@@ -128,21 +192,20 @@ class Mrwatts
 
 	def write_bassline
 		@tracks["bassline"].events << ProgramChange.new(1, 32, 1)
-		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
+		4.times { build_track(@basslineA, @tracks["bassline"], 1) }
 		2.times { build_track(@basslineB, @tracks["bassline"], 1) }
 		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
 	end
 
 	def write_chords
 		@tracks["chords"].events << ProgramChange.new(2, 96, 1)
-		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
+		4.times { build_track(@basslineA, @tracks["chords"], 2, true) }
 		2.times { build_track(@basslineB, @tracks["chords"], 2, true) }
 		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
+		ending_chord
 	end
 
 	def build_track(note_array, track, channel, chords = false, max_velocity = @velocity)
-
-	  	#default_scale = @scales[@scale]
 
 		note_array.each do |offset|
 			note = offset["note"]
@@ -162,72 +225,15 @@ class Mrwatts
 	  			track.add_note(channel, oct, @scale, note, mod, velocity, length)
 	  		end
 		end
-
+		
 	end
 
-	def calculate_length(sequence)
-		length = 0
-		sequence.each do |note|
-			length += note["length"]
-		end
-		length
-	end
-
-	def empty_measure
-		[
-			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
-			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
-			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0},
-			{"note"=> 0, "length"=> @note_lengths["whole"], "velocity"=> 0}		
-		]
-	end
-
-	def fade_in_tracks 
-		#pending
-	end
-
-	def ending_note
-		r = Random.new
-		note = @roots[r.rand(@roots.length)]
-		e = [{"note"=> note, "length"=> @note_lengths["whole"]}]
-		build_track(e, @tracks["melody"], 0)
-	end
-
-	def fix_sequence_lengths
-		if (calculate_length(@basslineA) < calculate_length(@basslineB))
-			aLength = calculate_length(@basslineA)
-			bLength = calculate_length(@basslineB)
-			diff = bLength - aLength
-			#note: messy
-			if diff == (aLength)
-				temp = @basslineA.dup
-				@basslineA.each do |note|
-					temp.push(note)
-				end
-				@basslineA = temp.dup
-			end
-		end
-	end
-
-	def set_scale(scale = "aeolian")
-		scale = "aeolian" if scale == "minor"
-		scale = "ionian" if scale == "major"
-		@scales[scale]
-	end
-
-	def set_bpm(bpm)
-		bpm ||= 120
-		bpm = 150 if bpm == "fast"
-		bpm = 120 if bpm == "medium"
-		bpm = 90 if bpm == "slow"
-		bpm
-	end
-
+	#compose!
 	def compose(options = {})
-
 		@scale = @scales[options["scale"] || "dorian"]
 		@bpm = set_bpm(options["bpm"]).to_i
 		@velocity = options[:volume] || 127
+		@song_name = "crab_cakes"
 
 		#required master tracks
 		@seq = Sequence.new()
@@ -259,27 +265,6 @@ class Mrwatts
 		File.open("#{@song_name}.mid", 'wb') { |file| @seq.write(file) }
 
 		puts "Song composed."
-	end
-
-	def tell_joke
-		puts "What sound does a squirrel make?"
-	end
-
-	def format_title_for_file(name)
-		"crab_cakes"
-	end
-
-	def random_name
-		r = Random.new
-		names = [
-			"Sugar's got it going on",
-			"Squirrel",
-			"Get your shoes on!",
-			"Humans",
-			"High Time",
-			"Crab Cakes"
-		]
-		names[r.rand(names.length)]
 	end
 
 end

@@ -12,4 +12,5 @@
 	<li>Combine the basslines and chords data into the same json file to give them greater independence from each other while still being connected</li>
 	<li>If the phrase ends before the measure, add an appropriate amount of silence to fill the rest of the measure up</li>
 	<li>Support for different instruments</li>
+	<li>Some major refactoring/separating into multiple files</li>
 </ol>
