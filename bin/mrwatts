@@ -34,12 +34,3 @@ scale = options[:scale]
 bpm = options[:bpm]
 
 rw.compose(options)
-
-case ARGV[0]
-when "say_hello"
-  puts "Hello #{name}"
-when "say_goodbye"
-  puts "Goodbye #{name}"
-else
-  #puts opt_parser
-end
