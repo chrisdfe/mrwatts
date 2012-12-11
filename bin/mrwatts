@@ -12,15 +12,16 @@ opt_parser = OptionParser.new do |opt|
 	opt.separator  ""
 	opt.separator  "Commands"
 	opt.separator  "     scale: the scale you want your song to use"
+	opt.separator  "     the bpm (tempo) you want your song to have"
 	opt.separator  ""
 	opt.separator  "Options"
 
 	opt.on("-s","--scale SCALE","the scale you want to use") do |scale|
-		options[:scale] = scale
+		options["scale"] = scale
 	end
 
 	opt.on("-b","--bpm BPM","the bpm (tempo) you want your song to have") do |bpm|
-		options[:bpm] = bpm
+		options["bpm"] = bpm
 	end
 
 	opt.on("-h","--help","help") do
@@ -30,6 +31,7 @@ end
 
 opt_parser.parse!
 scale = options[:scale]
+bpm = options[:bpm]
 
 rw.compose(options)
 

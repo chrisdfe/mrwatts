@@ -223,12 +223,11 @@ class Mrwatts
 		bpm
 	end
 
-	def compose(params = {})
+	def compose(options = {})
 
-		@scale = @scales[params["scale"] || "dorian"]
-		@bpm = set_bpm(params["bpm"])
-		@velocity = params["volume"] || 127
-		random = params["random_name"] || false
+		@scale = @scales[options["scale"] || "dorian"]
+		@bpm = set_bpm(options["bpm"]).to_i
+		@velocity = options[:volume] || 127
 
 		#required master tracks
 		@seq = Sequence.new()
