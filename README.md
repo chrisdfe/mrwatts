@@ -4,10 +4,10 @@ This gem is for those who love the sweet sonds of MIDI music but lack the resour
 ##How to use
 
 Install Mrwatts
-> gem install Mrwatts
+		gem install Mrwatts
 
 Get Mrwatts to compose using default settings
->Mrwatts
+		Mrwatts
 
 Or, specify how you want your song to sound
->Mrwatts --scale melodic_minor --bpm 180
+		Mrwatts --scale melodic_minor --bpm 180
