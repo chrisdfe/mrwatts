@@ -4,11 +4,8 @@ describe Mrwatts do
 
 	before do
 		@rw = Mrwatts.new
+		@rw.compose
 	end
-
-	after(:each) do
-    	# @rw.compose
-  	end
 
 	describe "scales" do
 		it "should use a default scale when given none" do
@@ -21,7 +18,7 @@ describe Mrwatts do
 			@rw.set_scale("lydian").should be_a(Array)
 			@rw.set_scale("mixolydian").should be_a(Array)
 			@rw.set_scale("aeolian").should be_a(Array)
-			@rw.set_scale("locrian").should be_a(Array)
+			@rw.set_scale("locrian").should be_a(Array)	
 		end
 		it "should accept 'major' or 'minor' as the scale" do
 			@rw.set_scale("major").should be_a(Array)

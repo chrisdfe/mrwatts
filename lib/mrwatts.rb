@@ -83,40 +83,14 @@ class Mrwatts
 		melody
 	end
 
-	def build_track(note_array, track, channel, chords = false)
-
-	  	#default_scale = @scales[@scale]
-
-		note_array.each do |offset|
-			note = offset["note"]
-			length = offset["length"]
-			mod = offset["mod"] || 0 #modulation: sharp or flat
-			octave_index = offset["octave"] || 4
-			velocity = offset["velocity"] || @velocity
-
-		  	fixed_note = fix_note({"note" => note, "oct" => octave_index})
-		  	note = fixed_note["note"]
-		  	oct = @octaves[fixed_note["oct"]]
-
-		  	if chords then
-				chord_notes = build_chord(note, octave_index, @scale)
-				track.chord(chord_notes, length)
-			else
-	  			#this seems like too many parameters
-	  			track.add_note(channel, oct, @scale, note, mod, velocity, length)
-	  		end
-		end
-
-	end
-
-	def build_chord(note, octave_index, default_scale)
+	def build_chord(note, octave_index, scale)
   		one = fix_note({"note" => note, "oct" => octave_index})
   		three = fix_note({"note" => note + 2, "oct" => octave_index})
   		five = fix_note({"note" => note + 4, "oct" => octave_index})
 		[
-			@octaves[one["oct"]] + default_scale[one["note"] - 1],
-			@octaves[three["oct"]] + default_scale[three["note"] - 1],
-			@octaves[five["oct"]] + default_scale[five["note"] - 1]
+			@octaves[one["oct"]] + scale[one["note"] - 1],
+			@octaves[three["oct"]] + scale[three["note"] - 1],
+			@octaves[five["oct"]] + scale[five["note"] - 1]
 		]
 	end
 
@@ -141,30 +115,54 @@ class Mrwatts
 			track.instrument = GM_PATCH_NAMES[0]
 			@tracks[index] = track
 		end
-		@tracks
 	end
 
 	def write_melody
 		#2.times { build_track(empty_measure, @tracks["melody"], @scale, 0) }
 
-		@tracks["melody"].events << ProgramChange.new(0, 16, 0)
-	 	2.times { build_track(@melodyA, @tracks["melody"], 0) }
-	 	2.times { build_track(@melodyB, @tracks["melody"], 0) }
+		@tracks["melody"].events << ProgramChange.new(0, 17, 0)
+	 	2.times { build_track(@melodyA, @tracks["melody"], 0, false, 100) }
+	 	2.times { build_track(@melodyB, @tracks["melody"], 0, false, 100) }
 	 	ending_note
 	end
 
 	def write_bassline
-		@tracks["bassline"].events << ProgramChange.new(1, 2, 1)
+		@tracks["bassline"].events << ProgramChange.new(1, 32, 1)
 		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
 		2.times { build_track(@basslineB, @tracks["bassline"], 1) }
 		2.times { build_track(@basslineA, @tracks["bassline"], 1) }
 	end
 
 	def write_chords
-		@tracks["chords"].events << ProgramChange.new(2, 96, 2)
+		@tracks["chords"].events << ProgramChange.new(2, 96, 1)
 		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
 		2.times { build_track(@basslineB, @tracks["chords"], 2, true) }
 		2.times { build_track(@basslineA, @tracks["chords"], 2, true) }
+	end
+
+	def build_track(note_array, track, channel, chords = false, max_velocity = @velocity)
+
+	  	#default_scale = @scales[@scale]
+
+		note_array.each do |offset|
+			note = offset["note"]
+			length = offset["length"]
+			mod = offset["mod"] || 0 #modulation: sharp or flat
+			octave_index = offset["octave"] || 4
+			velocity = offset["velocity"] || max_velocity
+
+		  	fixed_note = fix_note({"note" => note, "oct" => octave_index})
+		  	note = fixed_note["note"]
+		  	oct = @octaves[fixed_note["oct"]]
+
+		  	if chords then
+				chord_notes = build_chord(note, octave_index, @scale)
+				track.chord(chord_notes, length)
+			else
+	  			track.add_note(channel, oct, @scale, note, mod, velocity, length)
+	  		end
+		end
+
 	end
 
 	def calculate_length(sequence)
@@ -230,7 +228,7 @@ class Mrwatts
 		@scale = @scales[params["scale"] || "dorian"]
 		@bpm = set_bpm(params["bpm"])
 		@velocity = params["volume"] || 127
-		random == params["random_name"] || false
+		random = params["random_name"] || false
 
 		#required master tracks
 		@seq = Sequence.new()

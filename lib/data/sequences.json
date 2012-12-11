@@ -49,7 +49,7 @@
 		{"note": 5, "length": "quarter"}
 	],
 	[
-		{"note": 3, "length": "half triplet"},
+		{"note": 3, "length": "eighth"},
 		{"note": 2, "length": "eighth"},
 		{"note": 3, "length": "quarter"},
 		{"note": 4, "length": "quarter"}

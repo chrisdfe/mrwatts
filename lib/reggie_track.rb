@@ -26,9 +26,9 @@ class ReggieTrack < MIDI::Track
 	    recalc_delta_from_times
 	  end
 
-	  def add_note(channel, oct, default_scale, note, mod, velocity, length)
-		events << NoteOn.new(channel, oct + default_scale[note - 1] + mod, velocity, 0)
-	  	events << NoteOff.new(channel, oct + default_scale[note - 1] + mod, velocity, length)
+	  def add_note(channel, oct, scale, note, mod, velocity, length)
+		events << NoteOn.new(channel, oct + scale[note - 1] + mod, velocity, 0)
+	  	events << NoteOff.new(channel, oct + scale[note - 1] + mod, velocity, length)
 	  end
 
 	  private
