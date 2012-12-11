@@ -37,7 +37,7 @@ class Mrwatts
 	end
 
 	def get_json(filename)
-		file = open("lib/data/#{filename}.json")
+		file = open("#{File.expand_path('../../', __FILE__)}/lib/data/#{filename}.json")
 		json = file.read
 		JSON.parse(json)
 	end
