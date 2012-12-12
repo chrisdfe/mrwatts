@@ -14,7 +14,8 @@ class Mrwatts
 	end
 
 	# Options handling
-	def set_scale(scale = "aeolian")
+	def set_scale(scale)
+		scale ||= "aeolian"
 		scale = "aeolian" if scale == "minor"
 		scale = "ionian" if scale == "major"
 		@scales[scale]
@@ -230,7 +231,7 @@ class Mrwatts
 
 	#compose!
 	def compose(options = {})
-		@scale = @scales[options["scale"] || "dorian"]
+		@scale = set_scale(options["scale"])
 		@bpm = set_bpm(options["bpm"]).to_i
 		@velocity = options[:volume] || 127
 		@song_name = "crab_cakes"
