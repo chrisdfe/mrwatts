@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'mrwatts'
-  s.version     = '0.1.3'
+  s.version     = '0.1.4'
   s.date        = '2010-04-28'
   s.summary     = "An improvisational midi making music gem"
   s.description = "Named after the inspiring Reggie Watts"

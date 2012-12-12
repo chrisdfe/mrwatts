@@ -14,7 +14,7 @@ class Mrwatts
 	end
 
 	# Options handling
-	def set_scale(scale)
+	def set_scale(scale = nil)
 		scale ||= "aeolian"
 		scale = "aeolian" if scale == "minor"
 		scale = "ionian" if scale == "major"
