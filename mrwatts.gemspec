@@ -7,7 +7,9 @@ Gem::Specification.new do |s|
   s.authors     = ["Christopher Ferris"]
   s.email       = 'christopher.d.ferris@gmail.com'
   s.executables << "mrwatts"
-  s.files       = [
+
+  s.files       = Dir.glob("{bin,lib,test}/**/*") + %w(Rakefile README.md Travis.yml)
+  [
   	"README.md",
   	"TODO.md",
   	"Rakefile",

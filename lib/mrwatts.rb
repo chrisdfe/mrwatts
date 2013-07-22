@@ -18,14 +18,10 @@ class Mrwatts
 
   # Options handling
   def set_scale!(scale = nil)
-    puts scale
     scale ||= "aeolian"
     scale = "aeolian" if scale == "minor"
     scale = "ionian" if scale == "major"
     @scale = scale
-    puts scale
-    puts @scale
-    puts MusicData.get_scales[scale]
     return if MusicData.get_scales[scale] != nil
 
     puts "Mr Watts doesn't know that scale."
