@@ -4,17 +4,8 @@ require 'music_data'
 require 'utilities'
 
 module Composer
-  @@scale = "aeolian"
 
-  def self.scale=(scale)
-    @@scale = MusicData.scales[scale]
-  end
-
-  def self.choose_bassline(sequences)
-    sequences[Random.rand(sequences.length)]
-  end
-
-  def self.build_melody
+  def self.compose_melody
     r = Random.new
     melody = []
     starting_notes = []
@@ -37,9 +28,9 @@ module Composer
     melody
   end
 
-  def self.build_bassline
-    bassline = self.choose_bassline(MusicData.get_basslines)
-    bassline
+  def self.compose_bassline
+    basslines = MusicData.get_basslines
+    basslines[Random.rand(basslines.length)]
   end
 
   # Right now limited to a 1st inversion triad
@@ -49,93 +40,29 @@ module Composer
     five  = Utilities.fix_note({"note" => note + 4, "oct" => octave_index})
 
     [
-      MusicData::OCTAVES[one["oct"]] + @@scale[one["note"] - 1],
-      MusicData::OCTAVES[three["oct"]] + @@scale[three["note"] - 1],
-      MusicData::OCTAVES[five["oct"]] + @@scale[five["note"] - 1]
+      MusicData::OCTAVES[one["oct"]] + SongData.scale[one["note"] - 1],
+      MusicData::OCTAVES[three["oct"]] + SongData.scale[three["note"] - 1],
+      MusicData::OCTAVES[five["oct"]] + SongData.scale[five["note"] - 1]
     ]
   end
 
-  def self.build_track!(melody, track, channel, chords = false, max_velocity = 127)
-    melody.each do |offset|
-      note         = offset["note"]
-      length       = offset["length"]
-      mod          = offset["mod"] || 0 # modulation: sharp or flat
-      octave_index = offset["octave"] || 4
-      velocity     = offset["velocity"] || max_velocity
-
-      fixed_note = Utilities.fix_note({"note" => note, "oct" => octave_index})
-      note = fixed_note["note"]
-      oct = MusicData::OCTAVES[fixed_note["oct"]]
-
-      if chords
-        chord_notes = build_chord(note, octave_index)
-        track.chord(chord_notes, length)
-      else
-        track.add_note(channel, oct, @@scale, note, mod, velocity, length)
-      end
-    end
-
-  end
-
   def self.empty_measure
-      [
-        {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
-        {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
-        {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
-        {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0}		
-      ]
+    [
+      {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
+      {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
+      {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0},
+      {"note"=> 0, "length"=> MusicData.note_lengths["whole"], "velocity"=> 0}    
+    ]
   end
 
-  def self.empty_measure!(track)
-    self.build_track!(self.empty_measure, track, 0)
-  end
-
-  def self.ending_note!(track)
+  def self.ending_note
     r = Random.new
     note = MusicData::ROOTS[r.rand(MusicData::ROOTS.length)]
-    e = [{"note"=> note, "length"=> MusicData.note_lengths["whole"]}]
-    self.build_track!(e, track, 0)
+    [{"note"=> note, "length"=> MusicData.note_lengths["whole"]}]
   end
 
-  def self.ending_chord!(track)
-    e = [{"note"=> 1, "octave" => 2, "length" => MusicData.note_lengths["whole"]}]
-    self.build_track!(e, track, 2, true)
-  end
-
-  def self.write_melody!(track)
-  track.events << ProgramChange.new(0, 17, 0)
-
-  melodyA = self.build_melody
-  melodyB = self.build_melody
-
-  2.times { self.empty_measure!(track) }
-    2.times { self.build_track!(melodyA, track, 0, false, 100) }
-    2.times { self.build_track!(melodyB, track, 0, false, 100) }
-    self.ending_note!(track)
-    track
-  end
-
-  def self.write_bassline!(track)
-    track.events << ProgramChange.new(1, 32, 1)
-
-    4.times { self.build_track!(basslineA, track, 1) }
-    2.times { self.build_track!(basslineB, track, 1) }
-    2.times { self.build_track!(basslineA, track, 1) }
-    track
-  end
-
-  def self.write_chords!(track)
-    track.events << ProgramChange.new(2, 96, 1)
-
-    basslineA = self.build_bassline
-    basslineB = self.build_bassline
-    Utilities.fix_sequence_lengths!(basslineA, basslineB)
-
-    4.times { self.build_track!(basslineA, track, 2, true) }
-    2.times { self.build_track!(basslineB, track, 2, true) }
-    2.times { self.build_track!(basslineA, track, 2, true) }
-    self.ending_chord!(track)
-    track
+  def self.ending_chord
+    [{"note"=> 1, "octave" => 2, "length" => MusicData.note_lengths["whole"]}]  
   end
 
 end

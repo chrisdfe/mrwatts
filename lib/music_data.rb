@@ -16,8 +16,8 @@ module MusicData
     end
   end
 
-  def self.scales
-    self.get_json "scales"
+  def self.get_scales
+    self.get_json("scales")
   end
 
   def self.get_json(filename)
@@ -50,6 +50,5 @@ module MusicData
       "eighth triplet" => s.note_to_delta('eighth triplet')
     }
   end
-
 
 end

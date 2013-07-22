@@ -1,9 +1,12 @@
 require 'midilib'
 require 'json'
+
 require 'reggie_track'
 require 'music_data'
+require 'song_data'
 require 'utilities'
 require 'composer'
+require 'arranger'
 
 include MIDI
 
@@ -15,9 +18,18 @@ class Mrwatts
 
   # Options handling
   def set_scale!(scale = nil)
-    @scale = scale || "aeolian"
-    @scale = "aeolian" if scale == "minor"
-    @scale = "ionian" if scale == "major"
+    puts scale
+    scale ||= "aeolian"
+    scale = "aeolian" if scale == "minor"
+    scale = "ionian" if scale == "major"
+    @scale = scale
+    puts scale
+    puts @scale
+    puts MusicData.get_scales[scale]
+    return if MusicData.get_scales[scale] != nil
+
+    puts "Mr Watts doesn't know that scale."
+    @scale = "aeolian"    
   end
 
   def set_bpm!(bpm)
@@ -61,10 +73,10 @@ class Mrwatts
 
     init_tracks
 
-    Composer.scale = @scale
-    Composer.write_melody! @tracks["melody"]
+    SongData.scale = @scale
+    Arranger.write_melody! @tracks["melody"]
     # @tracks["bassline"] = Composer.write_bassline
-    Composer.write_chords! @tracks["chords"]
+    Arranger.write_chords! @tracks["chords"]
 
     File.open("#{@song_name}.mid", 'wb') { |file| @seq.write(file) }
 
