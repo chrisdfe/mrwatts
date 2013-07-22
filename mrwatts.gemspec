@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'mrwatts'
-  s.version     = '0.1.4'
+  s.version     = '0.1.5'
   s.date        = '2012-12-11'
   s.summary     = "An improvisational midi making music gem"
   s.description = "Named after the inspiring Reggie Watts"
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   	"lib/data/basslines.json",
   	"lib/data/scales.json",
   	"lib/data/sequences.json",
-    "lib/data/settings.json",
   	"bin/mrwatts",
   	"test/mrwatts-spec.rb"
   ]

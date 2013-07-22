@@ -4,23 +4,9 @@ require 'reggie_track'
 
 module Utilities
 
-	def get_note_lengths
-	 	s = Sequence.new()
-		{
-			"whole" => s.note_to_delta('whole'),
-			"half" => s.note_to_delta('half'),
-			"quarter" => s.note_to_delta('quarter'),
-			"eighth" => s.note_to_delta('eighth'),
-			"sixteenth" => s.note_to_delta('sixteenth'),
-			"half triplet" => s.note_to_delta('half triplet'),
-			"quarter triplet" => s.note_to_delta('quarter triplet'),
-			"eighth triplet" => s.note_to_delta('eighth triplet')
-		}
-	end
-
 	# Makes sure the note fits into a 7-note scale,
 	# adjusts the octave if it is above 7 notes
-	def fix_note(params)
+	def self.fix_note(params)
 		note = params["note"]
 		oct = params["oct"]
 
@@ -32,13 +18,28 @@ module Utilities
 		{"note" => note, "oct" => oct}
 	end
 
-	def calculate_length(sequence)
+	def self.calculate_length(sequence)
 		#note: smelly
 		length = 0
 		sequence.each do |note|
 			length += note["length"]
 		end
 		length
+	end
+
+	#
+	def self.fix_sequence_lengths!(sequenceA, sequenceB)
+		if (calculate_length(sequenceA) < calculate_length(sequenceB))
+			aLength = self.calculate_length(sequenceA)
+			bLength = self.calculate_length(sequenceB)
+			diff = bLength - aLength
+
+			if diff == (aLength)
+				temp = sequenceA.dup
+				sequenceA.each { |note| temp.push(note) } 
+				sequenceA = temp.dup
+			end
+		end
 	end
 
 end
