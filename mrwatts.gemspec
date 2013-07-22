@@ -14,9 +14,13 @@ Gem::Specification.new do |s|
   	"Travis.yml",
   	"lib/mrwatts.rb",
   	"lib/reggie_track.rb",
+    "lib/music_data.rb",
+    "lib/utilities.rb",
+    "lib/composer.rb",
   	"lib/data/basslines.json",
   	"lib/data/scales.json",
   	"lib/data/sequences.json",
+    "lib/data/settings.json",
   	"bin/mrwatts",
   	"test/mrwatts-spec.rb"
   ]

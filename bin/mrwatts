@@ -3,16 +3,17 @@
 require "#{File.expand_path('../../', __FILE__)}/lib/mrwatts.rb"
 require 'optparse'
 
-rw = Mrwatts.new
-
 options = {}
 
 opt_parser = OptionParser.new do |opt|
 	opt.banner = "Usage: mrwatts [OPTIONS]"
 	opt.separator  ""
-	opt.separator  "Options"
-	opt.separator  "     scale: the scale you want your song to use"
-	opt.separator  "     bpm: the bpm (tempo) you want your song to have"
+	opt.separator  "Commands"
+	opt.separator  "    compose: compose a song with your custom settings or the default ones"
+	opt.separator  "    set: "
+	opt.separator  "Options (to be used with the 'set' command)"
+	opt.separator  "    scale: the scale you want your song to use"
+	opt.separator  "    bpm: the bpm (tempo) you want your song to have"
 	opt.separator  ""
 
 	opt.on("-s","--scale SCALE","the scale you want to use") do |scale|
@@ -28,8 +29,14 @@ opt_parser = OptionParser.new do |opt|
 	end
 end
 
-opt_parser.parse!
-scale = options[:scale]
-bpm = options[:bpm]
+rw = Mrwatts.new
 
-rw.compose(options)
+case ARGV[0]
+when "compose"
+    opt_parser.parse!
+    rw.compose(options)
+when "help"
+    puts opt_parser
+else
+    puts opt_parser
+end
