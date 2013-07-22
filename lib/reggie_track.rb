@@ -26,8 +26,8 @@ class ReggieTrack < MIDI::Track
   end
 
   def add_note(channel, oct, scale, note, mod, velocity, length)
-		events << NoteOn.new(channel, oct + scale[note - 1] + mod, velocity, 0)
-  	events << NoteOff.new(channel, oct + scale[note - 1] + mod, velocity, length)
+    events << NoteOn.new(channel, oct + scale[note - 1] + mod, velocity, 0)
+    events << NoteOff.new(channel, oct + scale[note - 1] + mod, velocity, length)
   end
 
   private

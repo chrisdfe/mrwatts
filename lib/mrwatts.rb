@@ -14,19 +14,18 @@ class Mrwatts
   end
 
   # Options handling
-  def set_scale(scale = nil)
-    scale ||= "aeolian"
-    scale = "aeolian" if scale == "minor"
-    scale = "ionian" if scale == "major"
-    MusicData.scales[scale]
+  def set_scale!(scale = nil)
+    @scale = scale || "aeolian"
+    @scale = "aeolian" if scale == "minor"
+    @scale = "ionian" if scale == "major"
   end
 
-  def set_bpm(bpm)
+  def set_bpm!(bpm)
     bpm ||= 120
     bpm = 150 if bpm == "fast"
     bpm = 120 if bpm == "medium"
     bpm = 90 if bpm == "slow"
-    bpm
+    @bpm = bpm.to_i
   end
 
   #Track writers
@@ -42,8 +41,8 @@ class Mrwatts
   end
 
   def set(options = {})
-    @scale = set_scale(options["scale"])
-    @bpm = set_bpm(options["bpm"]).to_i
+    set_scale!(options["scale"])
+    set_bpm!(options["bpm"])
     @velocity = options[:volume] || 127
     @song_name = "crab_cakes"
   end
@@ -62,6 +61,7 @@ class Mrwatts
 
     init_tracks
 
+    Composer.scale = @scale
     Composer.write_melody! @tracks["melody"]
     # @tracks["bassline"] = Composer.write_bassline
     Composer.write_chords! @tracks["chords"]
