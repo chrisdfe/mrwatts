@@ -1,6 +1,6 @@
-source :rubygems
+source "http://rubygems.org"
 
-gem "midilib"
+gem "midilib" 
 gem "json"
 
 group :test do
