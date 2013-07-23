@@ -1,165 +1,138 @@
-/*****************************************************************************/
-/*
-/* Common
-/*
-/*****************************************************************************/
-
-/* Global Reset */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-html, body { height: 100%; }
+/* ==========================================================================
+	Main
+	========================================================================== */
 
 body {
-  background-color: #FFF;
-  font: 13.34px Helvetica, Arial, sans-serif;
-  font-size: small;
-  text-align: center;
+	font-family: 'Source Sans Pro', sans-serif;
+	color: #444446;
+	font-size: 18px;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-size: 100%; }
-
-h1 { margin-bottom: 1em; }
-p { margin: 1em 0; }
-
-a         { color: #00a; }
-a:hover   { color: #000; }
-a:visited { color: #a0a; }
-
-table {
-  font-size: inherit;
-  font: 100%;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	font-weight: 600;
+	line-height: 1.2em;
 }
 
-/*****************************************************************************/
-/*
-/* Home
-/*
-/*****************************************************************************/
-ul.posts {
-  list-style-type: none;
-  margin-bottom: 2em;
+h2 {
+	margin-top: 25px;
+	font-size: 2.2em;
 }
 
-ul.posts li {
-  line-height: 1.75em;
+
+#header {
+	background: #FF5947;
+	text-align: center;
 }
 
-ul.posts span {
-  color: #aaa;
-  font-family: Monaco, "Courier New", monospace;
-  font-size: 80%;
+#logo-wrapper {
+	position: relative;
+	text-align: center;
+	margin: 0 auto;
+	height: 280px;
+	width: 280px;
 }
 
-/*****************************************************************************/
-/*
-/* Site
-/*
-/*****************************************************************************/
-
-.site {
-  font-size: 115%;
-  text-align: justify;
-  width: 42em;
-  margin: 3em auto 2em;
-  line-height: 1.5em;
+#logo-background,
+#logo {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
-.site .header a {
-  font-weight: bold;
-  text-decoration: none;
+#logo-background {
+	width: 280px;
+	height: 280px;
+
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+
+	background: #2ceaa8; /* Old browsers */
+	background: -moz-linear-gradient(left,  #2ceaa8 0%, #c7ff30 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2ceaa8), color-stop(100%,#c7ff30)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #2ceaa8 0%,#c7ff30 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #2ceaa8 0%,#c7ff30 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #2ceaa8 0%,#c7ff30 100%); /* IE10+ */
+	background: linear-gradient(to right,  #2ceaa8 0%,#c7ff30 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2ceaa8', endColorstr='#c7ff30',GradientType=1 ); /* IE6-9 */
 }
 
-.site .header h1.title {
-  display: inline-block;
-  margin-bottom: 2em;
+#logo {
+	top: 15%;
+	left: 15%;
 }
 
-.site .header h1.title a {
-  color: #a00;
+#title {
+	padding: 0;
+	margin: 0;
+	font-size: 10em;
+	font-weight: 900;
+	letter-spacing: -0.035em;
+	color: #fdfdff;
+	text-transform: uppercase;
 }
 
-.site .header h1.title a:hover {
-  color: #000;
+#content {
+	padding: 25px 0;
 }
 
-.site .header a.extra {
-  color: #aaa;
-  margin-left: 1em;
+.inner-wrap {
+	width: 700px;
+	margin: 0 auto;
 }
 
-.site .header a.extra:hover {
-  color: #000;
+/* Code highlighting
+   ========================================================================== */
+
+.highlight {
+	padding: 0 15px;
+	color: #333;
+	background-color: #fafafa;
+	border: 1px solid #ddd;
 }
 
-.site .meta {
-  color: #aaa;
+.highlight .nv {
+	color: #FF1A00;
 }
 
-.site .footer {
-  font-size: 80%;
-  color: #666;
-  border-top: 4px solid #eee;
-  margin-top: 2em;
-  overflow: hidden;
+/* Animations
+   ========================================================================== */
+
+.spinning {
+	animation-duration: 1s;
+	animation-name: spin;
+	animation-iteration-count: infinite;
+
+	-webkit-animation-name: spin;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+	-moz-animation-name: spin;
+	-moz-animation-duration: 1s;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-timing-function: linear;
+	-ms-animation-name: spin;
+	-ms-animation-duration: 1s;
+	-ms-animation-iteration-count: infinite;
+	-ms-animation-timing-function: linear;
 }
 
-.site .footer .contact {
-  float: left;
-  margin-right: 3em;
+.pulsing {
+	animation-duration: 1s;
+	animation-name: pulse;
+	animation-iteration-count: infinite;
 }
 
-.site .footer .contact a {
-  color: #8085C1;
-}
-
-.site .footer .rss {
-  margin-top: 1.1em;
-  margin-right: -.2em;
-  float: right;
-}
-
-.site .footer .rss img {
-  border: 0;
-}
-
-/*****************************************************************************/
-/*
-/* Posts
-/*
-/*****************************************************************************/
-
-/* standard */
-.post pre {
-  border: 1px solid #ddd;
-  background-color: #eef;
-  padding: 0 .4em;
-}
-
-.post ul, .post ol {
-  margin-left: 1.35em;
-}
-
-.post code {
-  border: 1px solid #ddd;
-  background-color: #eef;
-  padding: 0 .2em;
-}
-
-.post pre code {
-  border: none;
-}
-
-/* terminal */
-.post pre.terminal {
-  border: 1px solid #000;
-  background-color: #333;
-  color: #FFF;
-}
-
-.post pre.terminal code {
-  background-color: #333;
+/* keyframes for animation;  simple 0 to 360 */
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
 }
