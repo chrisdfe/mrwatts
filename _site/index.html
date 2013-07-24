@@ -32,60 +32,80 @@
 			<div id="content">
 				<div class="inner-wrap">
 					<div id="home">
-	
-		<p>MrWatts is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves. It is a command line tool that creates procedurally generated music customized to the user&#8217;s tastes.</p>
+	<p>
+		MrWatts is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves.  It is a command line tool that creates procedurally generated music customized to the user's tastes.
+	</p>
 
-<h2 id='dependencies'>Dependencies</h2>
+	<h2>Dependencies</h2>
+	<p>
+		This gem has two important dependencies: Midilib and JSON.  You can install these using <span class="inline-highlight">bundle install</span> or manually, using <a href="http://rubygems.org/" target="_blank">rubygems</a>.
+	</p>
 
-<p>This gem has two important dependencies: Midilib and JSON. You can install these using <span class='inline-highlight'>bundle install</span> or manually.</p>
+	<h2>How to use</h2>
 
-<h2 id='how_to_get'>How to get</h2>
+	<p>
+		Install Mrwatts.  You'll need to have <a href="http://rubygems.org/" target="_blank">rubygems</a> installed.
+	</p>
 
-<p>Install Mrwatts</p>
-<div class='highlight'><pre><code class='bash'><span class='nv'>$ </span>gem install Mrwatts
+	<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>gem install Mrwatts
 </code></pre></div>
-<p>Get Mrwatts to compose using default settings</p>
-<div class='highlight'><pre><code class='bash'><span class='nv'>$ </span>mrwatts compose
+
+	<p>
+		Get Mrwatts to compose for you using default settings
+	</p>
+
+	<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>mrwatts compose
 </code></pre></div>
-<p>Or, specify how you want your song to sound</p>
-<div class='highlight'><pre><code class='bash'><span class='nv'>$ </span>mrwatts compose --scale melodic_minor --bpm 180
-</code></pre></div><p>Your song will be saved as a file named crab_cakes.mid in your current directory.</p>
-<h3 id='scales'>Scales</h3>
-<p>Here is a complete list of available scales:</p><ul>
-	<li>Major</li>
-	<li>Minor</li>
-	<li>Ionian -- same as "major".</li>
-	<li>Dorian -- minor scale; somewhat mysterious sounding.</li>
-	<li>Phrygian -- minor scale; used often in metal.</li>
-	<li>Lydian -- major scale; somewhat mysterious sounding.</li>
-	<li>Mixolydian -- major scale; used often in blues.</li>
-	<li>Aeolian -- same as "minor".</li>
-	<li>Locrian -- minor/diminished scale; also used in metal.</li>
-	<li>Harmonic_minor -- minor scale; used alternative to aeolian that gives more satisfying resolutions.</li>
-	<li>Melodic_minor -- minor scale; used often in jazz and classical music.</li>
-	<li>Chromatic -- contains every note; sounds very eerie and atonal when Mr Watts uses it.</li>
-</ul>
-<h3 id='bpm'>BPM</h3>
 
-<p>The default BPM (beats per minute) is 120. A higher number makes the song faster and a lower number makes the song slower.</p>
+	<p>
+		Or, specify how you want your song to sound
+	</p>
 
-<h2 id='disclaimer'>Disclaimer</h2>
+	<div class="highlight"><pre><code class="bash"><span class="nv">$ </span>mrwatts compose --scale melodic_minor --bpm 180
+</code></pre></div>
 
-<p>This gem is still a work in progress, and many of the planned features have not yet been implemented. A lot of the songs you generate may sound terrible.</p>
+	<p>Your song will be saved as a file named crab_cakes.mid in your current directory.</p>
 
-<h2 id='links'>Links</h2>
-	
+	<h3>Scales</h3>
+	<p>Here is a complete list of available scales:</p>
+	<ul>
+		<li>Major</li>
+		<li>Minor</li>
+		<li>Ionian -- same as "major".</li>
+		<li>Dorian -- minor scale; somewhat mysterious sounding.</li>
+		<li>Phrygian -- minor scale; used often in metal.</li>
+		<li>Lydian -- major scale; somewhat mysterious sounding.</li>
+		<li>Mixolydian -- major scale; used often in blues.</li>
+		<li>Aeolian -- same as "minor".</li>
+		<li>Locrian -- minor/diminished scale; also used in metal.</li>
+		<li>Harmonic_minor -- minor scale; used alternative to aeolian that gives more satisfying resolutions.</li>
+		<li>Melodic_minor -- minor scale; used often in jazz and classical music.</li>
+		<li>Chromatic -- contains every note; sounds very eerie and atonal when Mr Watts uses it.</li>
+	</ul>
+
+	<h3>BPM</h3>
+	<p>
+		The default BPM (beats per minute) is 120.  A higher number makes the song faster and a lower number makes the song slower.
+	</p>
+
+	<h2>Disclaimer</h2>
+	<p>
+		This gem is still a work in progress, and many of the planned features have not yet been implemented.  A lot of the songs you generate may sound terrible.
+	</p>
 </div>
 				</div>
 			</div>
 
 			<div class="footer">
-				<div class="contact">
-					<p>
-						<a href="http://github.com/chrisdfe/">github.com/chrisdfe</a><br />
-						<a href="http://twitter.com/chrisdfe/">twitter.com/chrisdfe</a>
-					</p>
-				</div>
+				<ul class="contact-links">
+					<li>
+						<a href="http://github.com/chrisdfe/" target="_blank">github.com/chrisdfe</a><br />
+					</li>
+					
+					<li>
+						<a href="http://twitter.com/chrisdfe/" target="_blank">twitter.com/chrisdfe</a>
+					</li>
+				</ul>
 			</div>
 
 		</div> <!-- /container -->

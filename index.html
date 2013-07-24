@@ -4,7 +4,61 @@ title: MrWatts
 ---
 
 <div id="home">
-	{% for post in site.posts %}
-		{{ post.content }}
-	{% endfor %}
+	<p>
+		MrWatts is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves.  It is a command line tool that creates procedurally generated music customized to the user's tastes.
+	</p>
+
+	<h2>Dependencies</h2>
+	<p>
+		This gem has two important dependencies: Midilib and JSON.  You can install these using <span class="inline-highlight">bundle install</span> or manually, using <a href="http://rubygems.org/" target="_blank">rubygems</a>.
+	</p>
+
+	<h2>How to use</h2>
+
+	<p>
+		Install Mrwatts.  You'll need to have <a href="http://rubygems.org/" target="_blank">rubygems</a> installed.
+	</p>
+
+	{% highlight bash %}$ gem install Mrwatts{% endhighlight %}
+
+	<p>
+		Get Mrwatts to compose for you using default settings
+	</p>
+
+	{% highlight bash %}$ mrwatts compose{% endhighlight %}
+
+	<p>
+		Or, specify how you want your song to sound
+	</p>
+
+	{% highlight bash %}$ mrwatts compose --scale melodic_minor --bpm 180{% endhighlight %}
+
+	<p>Your song will be saved as a file named crab_cakes.mid in your current directory.</p>
+
+	<h3>Scales</h3>
+	<p>Here is a complete list of available scales:</p>
+	<ul>
+		<li>Major</li>
+		<li>Minor</li>
+		<li>Ionian -- same as "major".</li>
+		<li>Dorian -- minor scale; somewhat mysterious sounding.</li>
+		<li>Phrygian -- minor scale; used often in metal.</li>
+		<li>Lydian -- major scale; somewhat mysterious sounding.</li>
+		<li>Mixolydian -- major scale; used often in blues.</li>
+		<li>Aeolian -- same as "minor".</li>
+		<li>Locrian -- minor/diminished scale; also used in metal.</li>
+		<li>Harmonic_minor -- minor scale; used alternative to aeolian that gives more satisfying resolutions.</li>
+		<li>Melodic_minor -- minor scale; used often in jazz and classical music.</li>
+		<li>Chromatic -- contains every note; sounds very eerie and atonal when Mr Watts uses it.</li>
+	</ul>
+
+	<h3>BPM</h3>
+	<p>
+		The default BPM (beats per minute) is 120.  A higher number makes the song faster and a lower number makes the song slower.
+	</p>
+
+	<h2>Disclaimer</h2>
+	<p>
+		This gem is still a work in progress, and many of the planned features have not yet been implemented.  A lot of the songs you generate may sound terrible.
+	</p>
 </div>

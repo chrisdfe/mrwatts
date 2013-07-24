@@ -25,6 +25,13 @@ h2 {
 	font-size: 2.2em;
 }
 
+a {
+	color: #FF5947;
+}
+
+a:hover {
+	text-decoration: none;
+}
 
 #header {
 	padding-top: 15px;
@@ -91,6 +98,36 @@ h2 {
 	border-radius: 50%;
 }
 
+/* Footer
+   ========================================================================== */
+
+.footer {
+	padding: 20px 0;
+	border-top: 1px solid #ddd;
+	background: #fafafa;
+	font-size: .9em;
+	text-align: center;
+}
+
+.contact-links {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.contact-links li {
+	padding: 0 15px;
+	display: inline-block;
+}
+
+.contact-links a {
+	color: #666;
+	text-decoration: none;
+}
+
+.contact-links a:hover {
+	color: #FF5947;
+}
 
 /* Code highlighting
    ========================================================================== */
