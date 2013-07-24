@@ -4,12 +4,12 @@ title:  MrWatts
 categories: readme
 ---
 
-This gem is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves.  It is a command line tool that creates procedurally generated music customized to the user's tastes.
+MrWatts is for those who love the sweet sonds of MIDI music but lack the resources or talent to make any for themselves.  It is a command line tool that creates procedurally generated music customized to the user's tastes.
 
 ##Dependencies
-This gem has two important dependencies: Midilib and JSON.  You can install these using bundle install or manually.
+This gem has two important dependencies: Midilib and JSON.  You can install these using <span class="inline-highlight">bundle install</span> or manually.
 
-##How to use
+##How to get
 
 Install Mrwatts
 {% highlight bash %}
