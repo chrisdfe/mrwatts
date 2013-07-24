@@ -3,9 +3,9 @@
 	========================================================================== */
 
 body {
-	font-family: 'Source Sans Pro', sans-serif;
+	font-family: "proxima-nova", sans-serif;
 	color: #444446;
-	font-size: 18px;
+	font-size: 19px;
 }
 
 h1,
@@ -14,11 +14,10 @@ h3,
 h4,
 h5,
 h6 {
-	color: #fff;
-	padding: 0;
+	color: #444;
+	padding: 0.3 0 0.8em;
 	margin: 0;
 	font-weight: 600;
-	line-height: 1.2em;
 }
 
 h2 {
@@ -28,6 +27,7 @@ h2 {
 
 
 #header {
+	padding-top: 15px;
 	background: #FF5947;
 	text-align: center;
 }
@@ -36,8 +36,6 @@ h2 {
 	position: relative;
 	text-align: center;
 	margin: 0 auto;
-	height: 280px;
-	width: 280px;
 }
 
 #logo-background,
@@ -48,13 +46,7 @@ h2 {
 }
 
 #logo-background {
-	width: 280px;
-	height: 280px;
-
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
-	border-radius: 50%;
-
+	/* gradient bg */
 	background: #2ceaa8; /* Old browsers */
 	background: -moz-linear-gradient(left,  #2ceaa8 0%, #c7ff30 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2ceaa8), color-stop(100%,#c7ff30)); /* Chrome,Safari4+ */
@@ -66,8 +58,13 @@ h2 {
 }
 
 #logo {
-	top: 15%;
-	left: 15%;
+	top: 14%;
+	left: 14%;
+}
+
+.logo-size {
+	width: 275px;
+	height: 275px;
 }
 
 #title {
@@ -75,7 +72,6 @@ h2 {
 	margin: 0;
 	font-size: 10em;
 	font-weight: 900;
-	letter-spacing: -0.035em;
 	color: #fdfdff;
 	text-transform: uppercase;
 }
@@ -89,6 +85,13 @@ h2 {
 	margin: 0 auto;
 }
 
+.circle {
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+}
+
+
 /* Code highlighting
    ========================================================================== */
 
@@ -97,11 +100,15 @@ h2 {
 	color: #333;
 	background-color: #fafafa;
 	border: 1px solid #ddd;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .highlight .nv {
-	color: #FF1A00;
+	color: #FF5947;
 }
+
 
 /* Animations
    ========================================================================== */
@@ -135,30 +142,30 @@ h2 {
 
 @-webkit-keyframes pulse {
     0% { -webkit-transform: scale(1); }	
-	50% { -webkit-transform: scale(1.1); }
+	50% { -webkit-transform: scale(1.2); }
     100% { -webkit-transform: scale(1); }
 }
 @-moz-keyframes pulse {
     0% { -moz-transform: scale(1); }	
-	50% { -moz-transform: scale(1.1); }
+	50% { -moz-transform: scale(1.2); }
     100% { -moz-transform: scale(1); }
 }
 @-o-keyframes pulse {
     0% { -o-transform: scale(1); }	
-	50% { -o-transform: scale(1.1); }
+	50% { -o-transform: scale(1.2); }
     100% { -o-transform: scale(1); }
 }
 @keyframes pulse {
     0% { transform: scale(1); }	
-	50% { transform: scale(1.1); }
+	50% { transform: scale(1.2); }
     100% { transform: scale(1); }
 }
 
 .pulsing {
-	-webkit-animation-duration: 1s;
-	-moz-animation-duration: 1s;
-	-o-animation-duration: 1s;
-	animation-duration: 1s;
+	-webkit-animation-duration: 1.3s;
+	-moz-animation-duration: 1.3s;
+	-o-animation-duration: 1.3s;
+	animation-duration: 1.3s;
 
 	-webkit-animation-name: pulse;
 	-moz-animation-name: pulse;
