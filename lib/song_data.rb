@@ -1,4 +1,4 @@
-require "music_data"
+require_relative "music_data"
 
 module SongData
   @@scale = "aeolian"

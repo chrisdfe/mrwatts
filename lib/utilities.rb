@@ -1,6 +1,7 @@
 require 'midilib'
 require 'json'
-require 'reggie_track'
+
+require_relative 'reggie_track'
 
 module Utilities
 
@@ -29,9 +30,10 @@ module Utilities
 
 	#
 	def self.fix_sequence_lengths!(sequenceA, sequenceB)
-		if (calculate_length(sequenceA) < calculate_length(sequenceB))
-			aLength = self.calculate_length(sequenceA)
-			bLength = self.calculate_length(sequenceB)
+		aLength = self.calculate_length(sequenceA)
+		bLength = self.calculate_length(sequenceB)
+				
+		if (aLength < bLength)
 			diff = bLength - aLength
 
 			if diff == (aLength)

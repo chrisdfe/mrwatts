@@ -1,46 +1,65 @@
 require 'midilib'
 require 'json'
-require 'composer'
 
-module Arranger
+require_relative 'composer'
 
-  def self.write_melody!(track)
+class Arranger
+
+  def initialize(scale, sequence, tracks)
+    @scale    = scale
+    @sequence = sequence
+    @tracks   = tracks
+  end
+
+  def write_song!
+    @bassline_a = Composer.compose_bassline
+    @bassline_b = Composer.compose_bassline
+
+    # TODO here: different song structures
+    SongData.scale = @scale
+    write_melody! @tracks["melody"]
+    write_bassline! @tracks["bassline"]
+    write_chords! @tracks["chords"]  
+  end
+
+  def write_melody!(track)
     track.events << ProgramChange.new(0, 17, 0)
 
     melodyA = Composer.compose_melody
     melodyB = Composer.compose_melody
 
-    2.times { self.empty_measure!(track) }
-    2.times { self.build_track!(melodyA, track, 0, false, 100) }
-    2.times { self.build_track!(melodyB, track, 0, false, 100) }
-    self.ending_note!(track)
+    2.times { empty_measure!(track) }
+    2.times { build_track!(melodyA, track, 0, false, 100) }
+    2.times { build_track!(melodyB, track, 0, false, 100) }
+    ending_note!(track)
+
     track
   end
 
-  def self.write_bassline!(track)
+  def write_bassline!(track)
     track.events << ProgramChange.new(1, 32, 1)
 
-    4.times { self.build_track!(basslineA, track, 1) }
-    2.times { self.build_track!(basslineB, track, 1) }
-    2.times { self.build_track!(basslineA, track, 1) }
+    4.times { build_track!(@bassline_a, track, 1) }
+    2.times { build_track!(@bassline_b, track, 1) }
+    2.times { build_track!(@bassline_a, track, 1) }
+
     track
   end
 
-  def self.write_chords!(track)
+  def write_chords!(track)
     track.events << ProgramChange.new(2, 96, 1)
 
-    basslineA = Composer.compose_bassline
-    basslineB = Composer.compose_bassline
-    Utilities.fix_sequence_lengths!(basslineA, basslineB)
+    Utilities.fix_sequence_lengths!(@bassline_a, @bassline_b)
 
-    4.times { self.build_track!(basslineA, track, 2, true) }
-    2.times { self.build_track!(basslineB, track, 2, true) }
-    2.times { self.build_track!(basslineA, track, 2, true) }
-    self.ending_chord!(track)
+    4.times { build_track!(@bassline_a, track, 2, true) }
+    2.times { build_track!(@bassline_b, track, 2, true) }
+    2.times { build_track!(@bassline_a, track, 2, true) }
+    ending_chord!(track)
+
     track
   end
 
-  def self.build_track!(melody, track, channel, chords = false, max_velocity = 127)
+  def build_track!(melody, track, channel, chords = false, max_velocity = 127)
     melody.each do |offset|
       note         = offset["note"]
       length       = offset["length"]
@@ -62,16 +81,16 @@ module Arranger
 
   end
 
-  def self.empty_measure!(track)
-    self.build_track!(Composer.empty_measure, track, 0)
+  def empty_measure!(track)
+    build_track!(Composer.empty_measure, track, 0)
   end
 
-  def self.ending_note!(track)
-    self.build_track!(Composer.ending_note, track, 0)
+  def ending_note!(track)
+    build_track!(Composer.ending_note, track, 0)
   end
 
-  def self.ending_chord!(track)
-    self.build_track!(Composer.ending_chord, track, 2, true)
+  def ending_chord!(track)
+    build_track!(Composer.ending_chord, track, 2, true)
   end
 
 end

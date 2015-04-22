@@ -1,6 +1,7 @@
 require 'midilib'
 require 'json'
-require 'utilities'
+
+require_relative 'utilities'
 
 module MusicData
   ROOTS   = [1, 3, 5, 7]
@@ -19,7 +20,7 @@ module MusicData
   def self.get_scales
     self.get_json("scales")
   end
-
+ 
   def self.get_json(filename)
     file = open("#{File.expand_path('../../', __FILE__)}/lib/data/#{filename}.json")
     json = file.read
@@ -40,14 +41,14 @@ module MusicData
   def self.note_lengths
     s = Sequence.new()
     {
-      "whole" => s.note_to_delta('whole'),
-      "half" => s.note_to_delta('half'),
-      "quarter" => s.note_to_delta('quarter'),
-      "eighth" => s.note_to_delta('eighth'),
-      "sixteenth" => s.note_to_delta('sixteenth'),
-      "half triplet" => s.note_to_delta('half triplet'),
+      "whole"           => s.note_to_delta('whole'),
+      "half"            => s.note_to_delta('half'),
+      "quarter"         => s.note_to_delta('quarter'),
+      "eighth"          => s.note_to_delta('eighth'),
+      "sixteenth"       => s.note_to_delta('sixteenth'),
+      "half triplet"    => s.note_to_delta('half triplet'),
       "quarter triplet" => s.note_to_delta('quarter triplet'),
-      "eighth triplet" => s.note_to_delta('eighth triplet')
+      "eighth triplet"  => s.note_to_delta('eighth triplet')
     }
   end
 

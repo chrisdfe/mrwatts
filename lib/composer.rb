@@ -1,7 +1,8 @@
 require 'midilib'
 require 'json'
-require 'music_data'
-require 'utilities'
+
+require_relative 'music_data'
+require_relative 'utilities'
 
 module Composer
 
